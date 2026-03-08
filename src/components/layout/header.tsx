@@ -43,8 +43,8 @@ export function Header({ user, onLoginClick, onLogoutClick, onEditProfileClick }
             </span>
             <span className="hidden items-center gap-2 md:flex">
               <span className="text-gray-300">|</span>
-              <span className="text-xs font-medium tracking-wide text-gray-400">
-                みんなの<span className="text-emerald-500/70">AI</span>あしあと記録
+              <span className="text-xs font-medium tracking-wide text-gray-600">
+                みんなの<span className="text-emerald-600">AI</span>あしあと記録
               </span>
             </span>
           </Link>
