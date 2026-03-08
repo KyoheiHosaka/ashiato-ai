@@ -60,6 +60,32 @@ const allComments = commentsData.comments;
 // ユーティリティ
 // ============================================================
 
+/** AI ツール名 → URL slug マッピング */
+const TOOL_SLUG_MAP = {
+  ChatGPT: 'chatgpt',
+  Claude: 'claude',
+  'Claude Code': 'claude',
+  Gemini: 'gemini',
+  Copilot: 'copilot',
+  Perplexity: 'perplexity',
+  Zapier: 'ai',
+};
+
+/** 投稿の slug を生成する（重複回避付き） */
+function generateSlug(post, usedSlugs) {
+  const toolSlug = TOOL_SLUG_MAP[post.ai_tools[0]] || 'ai';
+  const whatPart = (post.what || '').trim().slice(0, 30);
+  const base = `${toolSlug}-${whatPart}-${post.result}`;
+  let slug = base;
+  let counter = 2;
+  while (usedSlugs.has(slug)) {
+    slug = `${base}-${counter}`;
+    counter++;
+  }
+  usedSlugs.add(slug);
+  return slug;
+}
+
 /** 過去 daysRange 日間のランダムな日時を返す */
 function randomDate(daysRange = 90) {
   const now = Date.now();
@@ -198,6 +224,7 @@ async function main() {
 
   /** seed ID ("seed-t1-001" 等) → 実 post UUID のマップ */
   const postIdMap = {};
+  const usedSlugs = new Set();
 
   for (const post of allPosts) {
     const userId = userIdMap[post.display_name];
@@ -205,6 +232,8 @@ async function main() {
       console.warn(`   ⚠️  ユーザーが見つかりません: ${post.display_name}`);
       continue;
     }
+
+    const slug = generateSlug(post, usedSlugs);
 
     const { data, error } = await supabase
       .from('posts')
@@ -217,6 +246,7 @@ async function main() {
         result: post.result,
         result_detail: post.result_detail || null,
         prompt: post.prompt || null,
+        slug,
         is_anonymous: post.is_anonymous,
         created_at: randomDate(90),
       })
