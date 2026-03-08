@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { PostCard } from './post-card';
 import { CategoryCards } from '@/components/filter/category-cards';
 import { Button, Input, AdPlaceholder } from '@/components/ui';
@@ -11,10 +11,12 @@ import type { Post, PostFilters, TaskCategory } from '@/types';
 export function PostListSection() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [filters, setFilters] = useState<PostFilters>({});
+  const [searchInput, setSearchInput] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [showSearch, setShowSearch] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const POSTS_PER_PAGE = 12;
 
@@ -99,14 +101,16 @@ export function PostListSection() {
   };
 
   const handleSearchChange = (value: string) => {
-    setFilters({
-      ...filters,
-      search: value || undefined,
-    });
+    setSearchInput(value);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      setFilters((prev) => ({ ...prev, search: value || undefined }));
+    }, 400);
   };
 
   const clearFilters = () => {
     setFilters({});
+    setSearchInput('');
     setShowSearch(false);
   };
 
@@ -133,7 +137,7 @@ export function PostListSection() {
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
             <Input
               placeholder="課題やキーワードで検索..."
-              value={filters.search || ''}
+              value={searchInput}
               onChange={(e) => handleSearchChange(e.target.value)}
               className="pl-10"
             />
