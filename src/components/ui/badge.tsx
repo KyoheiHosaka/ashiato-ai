@@ -44,9 +44,9 @@ export function Badge({
 // Result-specific badge
 export function ResultBadge({ result }: { result: Result }) {
   const config: Record<Result, { variant: BadgeProps['variant']; label: string }> = {
-    solved: { variant: 'success', label: '✅ 解決' },
-    partial: { variant: 'warning', label: '△ 部分的に解決' },
-    unsolved: { variant: 'error', label: '❌ 解決できなかった' },
+    solved: { variant: 'success', label: '解決' },
+    partial: { variant: 'warning', label: '部分的に解決' },
+    unsolved: { variant: 'error', label: '解決できなかった' },
   };
 
   const { variant, label } = config[result];

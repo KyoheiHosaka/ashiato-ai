@@ -62,7 +62,7 @@ export function PostDetail({ post }: PostDetailProps) {
             <div className="mb-4 flex items-center gap-2">
               {taskCategory && (
                 <>
-                  <span className="text-2xl">{taskCategory.icon}</span>
+                  <span className="text-base">{taskCategory.icon}</span>
                   <Badge>{taskCategory.label}</Badge>
                 </>
               )}

@@ -216,6 +216,7 @@ async function main() {
         ai_tools: post.ai_tools,
         result: post.result,
         result_detail: post.result_detail || null,
+        prompt: post.prompt || null,
         is_anonymous: post.is_anonymous,
         created_at: randomDate(90),
       })
