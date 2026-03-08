@@ -6,6 +6,7 @@ import { Button, Input, ChipGroup, Card } from '@/components/ui';
 import { useAuthContext } from '@/components/auth';
 import { createBrowserClient } from '@/lib/supabase';
 import { TASK_CATEGORIES, AI_TOOLS, RESULTS, VALIDATION, PLACEHOLDERS } from '@/constants';
+import { generateUniqueSlug } from '@/lib/utils';
 import { Textarea } from '@/components/ui';
 import type { TaskCategory, AITool, Result } from '@/types';
 import { cn } from '@/lib/utils';
@@ -24,6 +25,7 @@ export function SimplePostForm() {
     ai_tools: [] as AITool[],
     result: '' as Result | '',
     result_detail: '',
+    prompt: '',
     is_anonymous: false,
   });
 
@@ -71,16 +73,25 @@ export function SimplePostForm() {
     try {
       const supabase = createBrowserClient();
 
+      const slug = await generateUniqueSlug(
+        supabase,
+        formData.ai_tools[0],
+        formData.what,
+        formData.result as import('@/types').Result
+      );
+
       const { data, error } = await supabase
         .from('posts')
         .insert({
           user_id: user!.id,
+          slug,
           task_category: formData.task_category,
           what: formData.what,
           goal: formData.goal,
           ai_tools: formData.ai_tools,
           result: formData.result,
           result_detail: formData.result_detail || null,
+          prompt: formData.prompt || null,
           is_anonymous: formData.is_anonymous,
         })
         .select()
@@ -88,7 +99,7 @@ export function SimplePostForm() {
 
       if (error) throw error;
 
-      router.push(`/post/${data.id}?created=true`);
+      router.push(`/logs/${data.slug}?created=true`);
     } catch (error) {
       console.error('Error creating post:', error);
       setErrors({ submit: '投稿に失敗しました。もう一度お試しください。' });
@@ -230,6 +241,20 @@ export function SimplePostForm() {
               />
             </div>
           )}
+        </div>
+
+        {/* Prompt */}
+        <div className="mb-8">
+          <Textarea
+            label="使ったプロンプト（AIへの指示）"
+            placeholder={PLACEHOLDERS.PROMPT}
+            value={formData.prompt}
+            onChange={(e) => updateField('prompt', e.target.value)}
+            maxLength={VALIDATION.PROMPT_MAX_LENGTH}
+            showCount
+            rows={4}
+            helperText="実際にAIに入力した文章を共有すると、読んだ人がすぐ試せます（任意）"
+          />
         </div>
 
         {/* Anonymous toggle */}

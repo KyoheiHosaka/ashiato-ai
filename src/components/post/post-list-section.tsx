@@ -6,7 +6,7 @@ import { CategoryCards } from '@/components/filter/category-cards';
 import { Button, Input, AdPlaceholder } from '@/components/ui';
 import { Search, Loader2, X } from 'lucide-react';
 import { createBrowserClient } from '@/lib/supabase';
-import type { Post, PostFilters, ChallengeCategory } from '@/types';
+import type { Post, PostFilters, TaskCategory } from '@/types';
 
 export function PostListSection() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -32,11 +32,13 @@ export function PostListSection() {
       .order('created_at', { ascending: false })
       .range((pageNum - 1) * POSTS_PER_PAGE, pageNum * POSTS_PER_PAGE - 1);
 
-    if (currentFilters.challenge_category) {
-      query = query.eq('challenge_category', currentFilters.challenge_category);
+    if (currentFilters.task_category) {
+      query = query.eq('task_category', currentFilters.task_category);
     }
     if (currentFilters.search) {
-      query = query.ilike('challenge_summary', `%${currentFilters.search}%`);
+      query = query.or(
+        `what.ilike.%${currentFilters.search}%,goal.ilike.%${currentFilters.search}%,challenge_summary.ilike.%${currentFilters.search}%`
+      );
     }
 
     const { data, error } = await query;
@@ -89,10 +91,10 @@ export function PostListSection() {
     setHasMore(data.length === POSTS_PER_PAGE);
   };
 
-  const handleCategoryChange = (category: ChallengeCategory | null) => {
+  const handleCategoryChange = (category: TaskCategory | null) => {
     setFilters({
       ...filters,
-      challenge_category: category || undefined,
+      task_category: category || undefined,
     });
   };
 
@@ -108,7 +110,7 @@ export function PostListSection() {
     setShowSearch(false);
   };
 
-  const hasActiveFilters = filters.challenge_category || filters.search;
+  const hasActiveFilters = filters.task_category || filters.search;
 
   return (
     <section id="posts" className="mx-auto max-w-5xl px-4 pb-16">
@@ -142,7 +144,7 @@ export function PostListSection() {
       {/* Category Cards */}
       <div className="mb-8">
         <CategoryCards
-          selected={filters.challenge_category || null}
+          selected={filters.task_category || null}
           onChange={handleCategoryChange}
         />
       </div>
@@ -151,9 +153,9 @@ export function PostListSection() {
       {hasActiveFilters && (
         <div className="mb-6 flex items-center gap-2">
           <span className="text-sm text-gray-500">絞り込み中:</span>
-          {filters.challenge_category && (
+          {filters.task_category && (
             <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-3 py-1 text-sm text-emerald-700">
-              {filters.challenge_category}
+              {filters.task_category}
             </span>
           )}
           {filters.search && (

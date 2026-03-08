@@ -28,6 +28,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Sync currentUser with auth.user
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCurrentUser(auth.user);
   }, [auth.user]);
 
@@ -41,6 +42,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       // Show profile setup if user was created within last 30 seconds
       if (diffSeconds < 30) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setIsProfileSetupOpen(true);
       }
     }

@@ -62,8 +62,8 @@ export function PostDetail({ post }: PostDetailProps) {
             <div className="mb-4 flex items-center gap-2">
               {taskCategory && (
                 <>
-                  <span className="text-2xl">{taskCategory.icon}</span>
-                  <Badge>{taskCategory.label}</Badge>
+                  <span className="text-base">{taskCategory.icon}</span>
+                  <Badge className={taskCategory.badgeClass}>{taskCategory.label}</Badge>
                 </>
               )}
               {!taskCategory && post.challenge_category && (
@@ -136,10 +136,22 @@ export function PostDetail({ post }: PostDetailProps) {
             )}
           </div>
 
+          {/* Prompt (if exists) */}
+          {post.prompt && (
+            <div className="mb-6">
+              <h2 className="mb-3 font-medium text-gray-900">使ったプロンプト（AIへの指示）</h2>
+              <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+                <p className="whitespace-pre-wrap font-mono text-sm leading-relaxed text-gray-700">
+                  {post.prompt}
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Tips (if exists) */}
           {post.tips && (
             <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 p-4">
-              <h3 className="font-medium text-amber-900">💡 コツ / Tips</h3>
+              <h3 className="font-medium text-amber-900">コツ / Tips</h3>
               <p className="mt-1 text-amber-800">{post.tips}</p>
             </div>
           )}

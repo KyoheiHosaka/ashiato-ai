@@ -20,6 +20,7 @@ export const TASK_CATEGORIES: {
   label: string;
   icon: string;
   color: string;
+  badgeClass: string;
   example: string;
 }[] = [
   {
@@ -27,6 +28,7 @@ export const TASK_CATEGORIES: {
     label: '自動化',
     icon: '⚡',
     color: 'bg-amber-50 text-amber-600 hover:bg-amber-100',
+    badgeClass: 'bg-amber-100 text-amber-700',
     example: '問い合わせをSlackに自動投稿',
   },
   {
@@ -34,6 +36,7 @@ export const TASK_CATEGORIES: {
     label: '分析',
     icon: '📊',
     color: 'bg-purple-50 text-purple-600 hover:bg-purple-100',
+    badgeClass: 'bg-purple-100 text-purple-700',
     example: '売上データから傾向を分析',
   },
   {
@@ -41,6 +44,7 @@ export const TASK_CATEGORIES: {
     label: 'ライティング',
     icon: '✍️',
     color: 'bg-blue-50 text-blue-600 hover:bg-blue-100',
+    badgeClass: 'bg-blue-100 text-blue-700',
     example: 'ブログ記事の下書き作成',
   },
   {
@@ -48,6 +52,7 @@ export const TASK_CATEGORIES: {
     label: 'リサーチ',
     icon: '🔍',
     color: 'bg-cyan-50 text-cyan-600 hover:bg-cyan-100',
+    badgeClass: 'bg-cyan-100 text-cyan-700',
     example: '競合サービスの調査',
   },
   {
@@ -55,6 +60,7 @@ export const TASK_CATEGORIES: {
     label: 'コーディング',
     icon: '💻',
     color: 'bg-green-50 text-green-600 hover:bg-green-100',
+    badgeClass: 'bg-green-100 text-green-700',
     example: '社内ツールの開発',
   },
   {
@@ -62,6 +68,7 @@ export const TASK_CATEGORIES: {
     label: 'デザイン',
     icon: '🎨',
     color: 'bg-pink-50 text-pink-600 hover:bg-pink-100',
+    badgeClass: 'bg-pink-100 text-pink-700',
     example: 'プレゼン資料の作成',
   },
   {
@@ -69,6 +76,7 @@ export const TASK_CATEGORIES: {
     label: 'その他',
     icon: '📦',
     color: 'bg-gray-50 text-gray-600 hover:bg-gray-100',
+    badgeClass: 'bg-gray-100 text-gray-600',
     example: 'その他のAI活用',
   },
 ];
@@ -158,7 +166,8 @@ export const VALIDATION = {
   WHAT_MAX_LENGTH: 50,
   GOAL_MAX_LENGTH: 100,
   CHALLENGE_SUMMARY_MAX_LENGTH: 100,
-  RESULT_DETAIL_MAX_LENGTH: 200,
+  RESULT_DETAIL_MAX_LENGTH: 400,
+  PROMPT_MAX_LENGTH: 1000,
   TIPS_MAX_LENGTH: 140,
   MAX_SCREENSHOTS: 3,
 } as const;
@@ -169,13 +178,15 @@ export const PLACEHOLDERS = {
   GOAL: '例: Slackに自動投稿＆Notionのデータベースに自動追加',
   CHALLENGE_SUMMARY: '例: 毎月の売上報告書の作成に時間がかかっていた',
   RESULT_DETAIL: '例: 報告書の8割が自動生成され、作業時間が3時間から30分に短縮',
+  PROMPT: '例: 以下の音声メモを議事録にしてください。箇条書きで、決定事項と次回の宿題を最後にまとめてください。\n\n[音声メモをここに貼り付け]',
   TIPS: '例: プロンプトにテンプレートを先に渡しておくと精度が上がる',
 } as const;
 
 // --- Site Metadata ---
 export const SITE_CONFIG = {
-  name: 'ASHIATO.ai',
+  name: 'myAIlogs',
+  brand: 'ASHIATO.ai',
   description: '「この課題、AIでこう解決した」が集まる場所',
   tagline: 'あなたの足跡が、誰かの一歩になる。',
-  url: 'https://ashiato.ai',
+  url: 'https://myailogs.com',
 } as const;

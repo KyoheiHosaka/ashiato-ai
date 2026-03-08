@@ -86,12 +86,14 @@ export type TechLevel =
 export interface Post {
   id: string;
   user_id: string;
+  slug?: string;         // SEO slug (e.g. chatgpt-エクセルのマクロ-partial)
   // New simple fields
   task_category: TaskCategory;
   what: string;          // 何を
   goal: string;          // どうしたかった
   ai_tools: AITool[];
   result: Result;
+  prompt?: string | null; // 使ったプロンプト（任意）
   // Legacy fields (optional for backward compat)
   industry?: Industry;
   role?: Role;
@@ -117,6 +119,7 @@ export interface PostFormDataSimple {
   goal: string;
   ai_tools: AITool[];
   result: Result;
+  prompt?: string;
   is_anonymous: boolean;
 }
 
@@ -180,9 +183,6 @@ export interface Screenshot {
 
 // --- Filter Types ---
 export interface PostFilters {
-  industry?: Industry;
-  role?: Role;
-  challenge_category?: ChallengeCategory;
   task_category?: TaskCategory;
   ai_tool?: AITool;
   result?: Result;
