@@ -27,7 +27,7 @@
       ],
       "result": "solved",
       "result_detail": "会社でGitHub Copilotを使う縛りがあるんだけど、テスト生成はClaude Codeの方が明らかに精度が高い。「このファイルの単体テストを書いて。エッジケースも含めて」と頼むと網羅的なテストが出てくる。レガシーコードのカバレッジ60%→85%まで上げられた。Copilotは補完に使って、テスト生成はClaude Codeって使い分けてる。",
-      "prompt": "以下のコードの単体テストを書いてください。Jestを使います。正常系だけでなく、エッジケース（nullチェック、境界値、例外処理など）も網羅的にカバーしてください。\n\n[テスト対象のコードをここに貼り付け]",
+      "prompt": "以下のコードの単体テストを書いてください。Jestを使います。正常系だけでなく、エッジケース（nullチェック、境界値、例外処理など）も網羅的にカバーしてください。\n\n```javascript\n// utils/price.js\nexport function calculateDiscountedPrice(originalPrice, discountRate, memberRank) {\n  if (originalPrice == null || discountRate == null) {\n    throw new Error('Price and discount rate are required');\n  }\n  if (typeof originalPrice !== 'number' || originalPrice < 0) {\n    throw new Error('Invalid price');\n  }\n  if (discountRate < 0 || discountRate > 1) {\n    throw new Error('Discount rate must be between 0 and 1');\n  }\n\n  let price = originalPrice * (1 - discountRate);\n\n  if (memberRank === 'gold') {\n    price = price * 0.95;\n  } else if (memberRank === 'platinum') {\n    price = price * 0.90;\n  }\n\n  return Math.floor(price);\n}\n```",
       "is_anonymous": false
     },
     {
@@ -41,7 +41,7 @@
       ],
       "result": "partial",
       "result_detail": "半年かけて仕組み作ったけど、思ったほどオンコール減らなかった。本番環境には自動で触らせられないし、判断は結局人間がしないといけない。「提案してくれるボット」止まり。ないよりマシだけど期待しすぎた。",
-      "prompt": "以下のアラートログを分析して、考えられる原因と対応手順を提案してください。過去の類似インシデントのパターンがあれば合わせて教えてください。\n\n【アラート内容】\n[アラートログをここに貼り付け]",
+      "prompt": "以下のアラートログを分析して、考えられる原因と対応手順を提案してください。過去の類似インシデントのパターンがあれば合わせて教えてください。\n\n【アラート内容】\n[2024-03-15 02:47:31] CRITICAL: API response time exceeded threshold (p99=8432ms, threshold=3000ms)\n[2024-03-15 02:47:35] ERROR: Database connection pool exhausted (pool_size=20, waiting=47)\n[2024-03-15 02:47:38] ERROR: PostgreSQL max_connections reached (current=98, max=100)\n[2024-03-15 02:47:42] WARNING: Redis cache hit rate dropped to 12% (normal: 85%+)\n[2024-03-15 02:47:45] ERROR: 503 Service Unavailable - /api/v2/orders endpoint (rate: 234/min)\n[2024-03-15 02:47:51] INFO: Active DB queries: 94 (avg_duration=6.2s, longest=42.1s)\n[2024-03-15 02:48:03] ERROR: Slow query detected: SELECT * FROM orders JOIN order_items ON... (42103ms)\n[2024-03-15 02:48:10] CRITICAL: Health check failed for app-server-03 and app-server-07",
       "is_anonymous": false
     },
     {
@@ -56,7 +56,7 @@
       ],
       "result": "solved",
       "result_detail": "PRD書くとき「ユーザーストーリー」「受け入れ条件」「エッジケース」「技術的制約」の観点でレビューしてもらってる。「このユーザーストーリーだと〇〇のケースが考慮されてない」みたいな指摘が結構的確で、エンジニアとの手戻りが減った。ちゃんと仕事してくれる。",
-      "prompt": "以下のPRDをレビューして、抜け漏れや曖昧な点を指摘してください。特に「ユーザーストーリー」「受け入れ条件」「エッジケース」「技術的制約」の観点で見てください。エンジニアが実装時に困りそうな点があれば具体的に教えてください。\n\n[PRDの内容をここに貼り付け]",
+      "prompt": "以下のPRDをレビューして、抜け漏れや曖昧な点を指摘してください。特に「ユーザーストーリー」「受け入れ条件」「エッジケース」「技術的制約」の観点で見てください。エンジニアが実装時に困りそうな点があれば具体的に教えてください。\n\n## PRD: 通知設定機能 v1.2\n\n### 概要\nユーザーが受け取る通知の種類・頻度・チャネル（メール/プッシュ/SMS）を個別に設定できる機能。\n\n### ユーザーストーリー\n- ユーザーとして、通知をオフにしたい\n- ユーザーとして、重要な通知だけ受け取りたい\n- ユーザーとして、通知の頻度を変更したい\n\n### 機能要件\n1. 通知カテゴリ一覧画面を追加する\n2. 各カテゴリのON/OFFを切り替えられるトグルを設置する\n3. 設定を保存できるようにする\n4. 設定はリアルタイムに反映される\n\n### 非機能要件\n- 設定変更は即時反映\n- モバイル対応",
       "is_anonymous": false
     },
     {
@@ -71,7 +71,7 @@
       ],
       "result": "solved",
       "result_detail": "groupby().agg()の書き方とか毎回調べてたのが不要になった。日本語で「こうやって集計して」と言えばコード出てくる。大規模データのパフォーマンス最適化は自分でやる必要あるけど、日常的な処理はほぼ任せてる。",
-      "prompt": "pandasで以下の処理をするコードを書いてください。\n\nデータ：[データの概要]\n処理内容：[やりたいこと（例：部門別・月別に売上を集計して、前月比も出す）]\n\nなるべく読みやすく、コメントもつけてください。",
+      "prompt": "pandasで以下の処理をするコードを書いてください。\n\nデータ：ECサイトの注文ログCSV（カラム：order_id, user_id, product_category, product_name, amount, order_date）。行数は約50万行。\n処理内容：product_categoryと月（order_dateから抽出）でグループ化して、月次売上合計・注文件数・平均注文金額を集計し、さらに前月比（売上の増減率）を各カテゴリ・月ごとに計算して出力する\n\nなるべく読みやすく、コメントもつけてください。",
       "is_anonymous": false
     },
     {
@@ -86,7 +86,7 @@
       ],
       "result": "partial",
       "result_detail": "デザイントークンをJSON形式で出力してTailwind CSSのクラスに変換してもらってる。色の近似値はうまくいく。レスポンシブとか複雑な挙動は結局エンジニアと話し合いが必要。共通言語ができたのはよかった。",
-      "prompt": "FigmaのデザインをTailwind CSSで実装したいです。以下のデザイントークン（色・フォントサイズ・スペーシング）をTailwindのクラス名に対応させてください。近似値でOKです。\n\n【デザイントークン】\n[JSON形式のデザイントークンをここに貼り付け]",
+      "prompt": "FigmaのデザインをTailwind CSSで実装したいです。以下のデザイントークン（色・フォントサイズ・スペーシング）をTailwindのクラス名に対応させてください。近似値でOKです。\n\n【デザイントークン】\n{\n  \"colors\": {\n    \"primary\": {\n      \"50\": \"#EEF2FF\",\n      \"500\": \"#6366F1\",\n      \"600\": \"#4F46E5\",\n      \"900\": \"#1E1B4B\"\n    },\n    \"neutral\": {\n      \"50\": \"#F9FAFB\",\n      \"200\": \"#E5E7EB\",\n      \"600\": \"#4B5563\",\n      \"900\": \"#111827\"\n    },\n    \"success\": \"#10B981\",\n    \"error\": \"#EF4444\",\n    \"warning\": \"#F59E0B\"\n  },\n  \"fontSize\": {\n    \"xs\": \"11px\",\n    \"sm\": \"13px\",\n    \"base\": \"15px\",\n    \"lg\": \"18px\",\n    \"xl\": \"22px\",\n    \"2xl\": \"28px\",\n    \"3xl\": \"36px\"\n  },\n  \"spacing\": {\n    \"1\": \"4px\",\n    \"2\": \"8px\",\n    \"3\": \"12px\",\n    \"4\": \"16px\",\n    \"6\": \"24px\",\n    \"8\": \"32px\",\n    \"12\": \"48px\",\n    \"16\": \"64px\"\n  },\n  \"borderRadius\": {\n    \"sm\": \"4px\",\n    \"md\": \"8px\",\n    \"lg\": \"12px\",\n    \"full\": \"9999px\"\n  }\n}",
       "is_anonymous": false
     },
     {
@@ -100,7 +100,7 @@
       ],
       "result": "solved",
       "result_detail": "「EC2インスタンスを東京リージョンに、セキュリティグループ付きで作成するTerraform」のように依頼すると、ほぼそのまま使えるコードが出てきます。IAMポリシーの設定は最小権限の原則を明示的に指示する必要がありますが、ボイラープレートの生成は爆速になりました。",
-      "prompt": "以下の要件でTerraformのコードを書いてください。\n\nリソース：[AWSリソースの種類と構成]\nリージョン：ap-northeast-1（東京）\nセキュリティ：IAMポリシーは最小権限の原則で設定してください\n\n変数はvariablesファイルに分離して、本番・ステージング環境で使い回せる構成にしてください。",
+      "prompt": "以下の要件でTerraformのコードを書いてください。\n\nリソース：\n- ECSクラスター（Fargate）：APIサーバー用（タスク定義含む、CPU 512 / メモリ 1024）\n- ALB：ECSへのHTTPS通信を終端、ACM証明書を使用\n- RDS（PostgreSQL 15）：マルチAZ構成、インスタンスクラス db.t3.medium\n- ElastiCache（Redis 7.0）：シングルノード、cache.t3.micro\n- VPC：パブリックサブネット2つ、プライベートサブネット2つ（マルチAZ）\n- セキュリティグループ：ALB→ECS→RDS/Redisの通信のみ許可\nリージョン：ap-northeast-1（東京）\nセキュリティ：IAMポリシーは最小権限の原則で設定してください\n\n変数はvariablesファイルに分離して、本番・ステージング環境で使い回せる構成にしてください。",
       "is_anonymous": false
     },
     {
@@ -115,7 +115,7 @@
       ],
       "result": "solved",
       "result_detail": "「ReactとVueの比較表を作って」から始めて、「非エンジニアの経営陣向けに」とブラッシュアップ。Perplexityで最新トレンドも調査した。技術的な深さと分かりやすさを両立した資料ができて、経営会議での質問にも自信を持って答えられた。われながらよくできた。",
-      "prompt": "技術選定の社内資料を作るのを手伝ってください。対象読者は非エンジニアの経営陣です。技術的に正確でありながら、専門知識なしに読めるレベルにしてほしいです。\n\n比較対象：[技術A] vs [技術B]\n評価観点：開発速度、学習コスト、コミュニティの規模、長期的なサポート、採用市場での人材確保のしやすさ",
+      "prompt": "技術選定の社内資料を作るのを手伝ってください。対象読者は非エンジニアの経営陣です。技術的に正確でありながら、専門知識なしに読めるレベルにしてほしいです。\n\n比較対象：Next.js（React） vs NuxtJS（Vue）\n評価観点：開発速度、学習コスト、コミュニティの規模、長期的なサポート、採用市場での人材確保のしやすさ",
       "is_anonymous": false
     },
     {
@@ -145,7 +145,7 @@
       ],
       "result": "partial",
       "result_detail": "アクセスログのサンプルを渡して「異常なパターンを検出して」と依頼しています。明らかな攻撃パターン（SQLインジェクション試行など）は見つけてくれますが、高度な標的型攻撃は見逃すリスクがあります。あくまで第一段階のスクリーニングとして使い、専門ツールと併用しています。",
-      "prompt": "以下のアクセスログを分析して、不正アクセスや攻撃の兆候となるパターンを検出してください。SQLインジェクション試行、ブルートフォース、異常なリクエスト頻度などの観点で見てください。疑わしいIPアドレスがあれば特にフラグを立ててください。\n\n[アクセスログをここに貼り付け]",
+      "prompt": "以下のアクセスログを分析して、不正アクセスや攻撃の兆候となるパターンを検出してください。SQLインジェクション試行、ブルートフォース、異常なリクエスト頻度などの観点で見てください。疑わしいIPアドレスがあれば特にフラグを立ててください。\n\n203.0.113.47 - - [15/Mar/2024:03:21:08 +0900] \"GET /login HTTP/1.1\" 200 2847\n203.0.113.47 - - [15/Mar/2024:03:21:09 +0900] \"POST /login HTTP/1.1\" 401 512\n203.0.113.47 - - [15/Mar/2024:03:21:10 +0900] \"POST /login HTTP/1.1\" 401 512\n203.0.113.47 - - [15/Mar/2024:03:21:11 +0900] \"POST /login HTTP/1.1\" 401 512\n203.0.113.47 - - [15/Mar/2024:03:21:12 +0900] \"POST /login HTTP/1.1\" 401 512\n198.51.100.22 - - [15/Mar/2024:03:22:34 +0900] \"GET /api/users?id=1' OR '1'='1 HTTP/1.1\" 400 128\n198.51.100.22 - - [15/Mar/2024:03:22:35 +0900] \"GET /api/users?id=1; DROP TABLE users-- HTTP/1.1\" 400 128\n192.168.1.105 - - [15/Mar/2024:03:25:01 +0900] \"GET /dashboard HTTP/1.1\" 200 15420\n203.0.113.47 - - [15/Mar/2024:03:25:44 +0900] \"POST /login HTTP/1.1\" 401 512\n203.0.113.47 - - [15/Mar/2024:03:25:45 +0900] \"POST /login HTTP/1.1\" 401 512\n10.0.0.15 - - [15/Mar/2024:03:26:12 +0900] \"GET /api/health HTTP/1.1\" 200 42\n203.0.113.47 - - [15/Mar/2024:03:26:33 +0900] \"POST /login HTTP/1.1\" 200 1893",
       "is_anonymous": false
     },
     {
@@ -159,7 +159,7 @@
       ],
       "result": "partial",
       "result_detail": "10ページの仕様書を丸ごと貼り付けて「このとおりに実装して」と頼んだけど、生成されたコードが仕様の半分しか満たしていない。何回やっても必ずどこかが欠ける。",
-      "prompt": "以下の仕様書をもとに実装してください。仕様の全項目を満たすようにしてください。\n\n[仕様書の全文をここに貼り付け]",
+      "prompt": "以下の仕様書をもとに実装してください。仕様の全項目を満たすようにしてください。\n\n# ユーザー認証モジュール 仕様書 v2.3\n\n## 1. 概要\nJWT + Refresh Tokenを用いたステートレス認証システム。\n\n## 2. エンドポイント仕様\n### POST /auth/register\n- リクエスト：{ email, password, display_name }\n- バリデーション：email形式チェック、password 8文字以上・大文字小文字数字記号各1文字以上\n- パスワードはbcrypt（saltRounds=12）でハッシュ化\n- 重複emailはHTTP 409を返す\n- 成功時：HTTP 201、{ user_id, email, display_name, created_at }を返す\n\n### POST /auth/login\n- リクエスト：{ email, password }\n- 失敗時は認証失敗理由を特定させない（HTTP 401 + 固定メッセージ）\n- 成功時：access_token（有効期限15分）とrefresh_token（有効期限7日）をHTTP Only Cookieにセット\n- ログイン成功・失敗ともにDBに監査ログを記録\n\n### POST /auth/refresh\n- refresh_tokenをCookieから取得して検証\n- 有効な場合、新しいaccess_tokenを発行\n- refresh_tokenのローテーションを実装（旧トークンは即時無効化）\n\n### POST /auth/logout\n- refresh_tokenをDBで無効化\n- Cookieをクリア\n\n## 3. セキュリティ要件\n- レートリミット：/loginは1IPあたり5回/分\n- 同一アカウントへの連続失敗10回でアカウントロック（30分）\n- JWTの署名アルゴリズム：RS256（非対称鍵）\n- CORS設定：許可オリジンは環境変数から取得\n\n## 4. 使用技術\n- Node.js + Express\n- PostgreSQL（Prismaを使用）\n- Redis（セッション・レートリミット管理）",
       "is_anonymous": false
     }
   ]
