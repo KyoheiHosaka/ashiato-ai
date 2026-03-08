@@ -25,7 +25,7 @@ export function PostCard({ post }: PostCardProps) {
     : post.challenge_summary || '';
 
   return (
-    <Link href={`/post/${post.id}`}>
+    <Link href={post.slug ? `/logs/${post.slug}` : `/post/${post.id}`}>
       <Card hover className="h-full">
         <CardContent>
           {/* Task Category Badge */}
