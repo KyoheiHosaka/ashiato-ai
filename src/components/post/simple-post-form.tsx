@@ -24,6 +24,7 @@ export function SimplePostForm() {
     ai_tools: [] as AITool[],
     result: '' as Result | '',
     result_detail: '',
+    prompt: '',
     is_anonymous: false,
   });
 
@@ -81,6 +82,7 @@ export function SimplePostForm() {
           ai_tools: formData.ai_tools,
           result: formData.result,
           result_detail: formData.result_detail || null,
+          prompt: formData.prompt || null,
           is_anonymous: formData.is_anonymous,
         })
         .select()
@@ -230,6 +232,20 @@ export function SimplePostForm() {
               />
             </div>
           )}
+        </div>
+
+        {/* Prompt */}
+        <div className="mb-8">
+          <Textarea
+            label="使ったプロンプト（AIへの指示）"
+            placeholder={PLACEHOLDERS.PROMPT}
+            value={formData.prompt}
+            onChange={(e) => updateField('prompt', e.target.value)}
+            maxLength={VALIDATION.PROMPT_MAX_LENGTH}
+            showCount
+            rows={4}
+            helperText="実際にAIに入力した文章を共有すると、読んだ人がすぐ試せます（任意）"
+          />
         </div>
 
         {/* Anonymous toggle */}

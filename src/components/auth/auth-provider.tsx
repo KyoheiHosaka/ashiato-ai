@@ -11,6 +11,7 @@ interface AuthContextValue {
   isAuthenticated: boolean;
   openLoginModal: (message?: string) => void;
   closeLoginModal: () => void;
+  openProfileSetup: () => void;
   logout: () => Promise<void>;
   refreshUser: () => void;
 }
@@ -82,6 +83,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     hasCheckedNewUser.current = false;
   };
 
+  const openProfileSetup = () => {
+    setIsProfileSetupOpen(true);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -90,6 +95,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated: auth.isAuthenticated,
         openLoginModal,
         closeLoginModal,
+        openProfileSetup,
         logout: auth.logout,
         refreshUser,
       }}
