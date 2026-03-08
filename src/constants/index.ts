@@ -158,7 +158,8 @@ export const VALIDATION = {
   WHAT_MAX_LENGTH: 50,
   GOAL_MAX_LENGTH: 100,
   CHALLENGE_SUMMARY_MAX_LENGTH: 100,
-  RESULT_DETAIL_MAX_LENGTH: 200,
+  RESULT_DETAIL_MAX_LENGTH: 400,
+  PROMPT_MAX_LENGTH: 1000,
   TIPS_MAX_LENGTH: 140,
   MAX_SCREENSHOTS: 3,
 } as const;
@@ -169,6 +170,7 @@ export const PLACEHOLDERS = {
   GOAL: '例: Slackに自動投稿＆Notionのデータベースに自動追加',
   CHALLENGE_SUMMARY: '例: 毎月の売上報告書の作成に時間がかかっていた',
   RESULT_DETAIL: '例: 報告書の8割が自動生成され、作業時間が3時間から30分に短縮',
+  PROMPT: '例: 以下の音声メモを議事録にしてください。箇条書きで、決定事項と次回の宿題を最後にまとめてください。\n\n[音声メモをここに貼り付け]',
   TIPS: '例: プロンプトにテンプレートを先に渡しておくと精度が上がる',
 } as const;
 

@@ -92,6 +92,7 @@ export interface Post {
   goal: string;          // どうしたかった
   ai_tools: AITool[];
   result: Result;
+  prompt?: string | null; // 使ったプロンプト（任意）
   // Legacy fields (optional for backward compat)
   industry?: Industry;
   role?: Role;
@@ -117,6 +118,7 @@ export interface PostFormDataSimple {
   goal: string;
   ai_tools: AITool[];
   result: Result;
+  prompt?: string;
   is_anonymous: boolean;
 }
 
@@ -180,9 +182,6 @@ export interface Screenshot {
 
 // --- Filter Types ---
 export interface PostFilters {
-  industry?: Industry;
-  role?: Role;
-  challenge_category?: ChallengeCategory;
   task_category?: TaskCategory;
   ai_tool?: AITool;
   result?: Result;
