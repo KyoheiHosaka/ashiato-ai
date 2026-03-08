@@ -13,20 +13,6 @@ export function Footer() {
             <p className="text-sm text-gray-500">{SITE_CONFIG.tagline}</p>
           </div>
 
-          <nav className="flex flex-wrap justify-center gap-6">
-            <Link
-              href="/"
-              className="text-sm text-gray-600 hover:text-gray-900"
-            >
-              事例を探す
-            </Link>
-            <Link
-              href="/post/new"
-              className="text-sm text-gray-600 hover:text-gray-900"
-            >
-              足跡を残す
-            </Link>
-          </nav>
         </div>
 
         <div className="mt-8 border-t border-gray-200 pt-6 text-center">
