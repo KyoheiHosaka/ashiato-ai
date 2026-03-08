@@ -41,6 +41,12 @@ export function Header({ user, onLoginClick, onLogoutClick, onEditProfileClick }
             <span className="text-xl font-bold text-gray-900">
               my<span className="text-emerald-600">AI</span>logs
             </span>
+            <span className="hidden items-center gap-2 md:flex">
+              <span className="text-gray-300">|</span>
+              <span className="text-xs font-semibold tracking-wide text-gray-800">
+                みんなの<span className="text-emerald-600">AI</span>あしあと記録
+              </span>
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
