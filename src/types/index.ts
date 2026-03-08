@@ -86,6 +86,7 @@ export type TechLevel =
 export interface Post {
   id: string;
   user_id: string;
+  slug?: string;         // SEO slug (e.g. chatgpt-エクセルのマクロ-partial)
   // New simple fields
   task_category: TaskCategory;
   what: string;          // 何を

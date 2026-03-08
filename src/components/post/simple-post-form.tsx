@@ -6,6 +6,7 @@ import { Button, Input, ChipGroup, Card } from '@/components/ui';
 import { useAuthContext } from '@/components/auth';
 import { createBrowserClient } from '@/lib/supabase';
 import { TASK_CATEGORIES, AI_TOOLS, RESULTS, VALIDATION, PLACEHOLDERS } from '@/constants';
+import { generateUniqueSlug } from '@/lib/utils';
 import { Textarea } from '@/components/ui';
 import type { TaskCategory, AITool, Result } from '@/types';
 import { cn } from '@/lib/utils';
@@ -72,10 +73,18 @@ export function SimplePostForm() {
     try {
       const supabase = createBrowserClient();
 
+      const slug = await generateUniqueSlug(
+        supabase,
+        formData.ai_tools[0],
+        formData.what,
+        formData.result as import('@/types').Result
+      );
+
       const { data, error } = await supabase
         .from('posts')
         .insert({
           user_id: user!.id,
+          slug,
           task_category: formData.task_category,
           what: formData.what,
           goal: formData.goal,
@@ -90,7 +99,7 @@ export function SimplePostForm() {
 
       if (error) throw error;
 
-      router.push(`/post/${data.id}?created=true`);
+      router.push(`/logs/${data.slug}?created=true`);
     } catch (error) {
       console.error('Error creating post:', error);
       setErrors({ submit: '投稿に失敗しました。もう一度お試しください。' });
