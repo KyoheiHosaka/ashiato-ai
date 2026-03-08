@@ -31,7 +31,7 @@ export function PostCard({ post }: PostCardProps) {
           {/* Task Category Badge */}
           <div className="mb-3 flex items-center gap-2">
             {taskCategory && (
-              <Badge>{taskCategory.label}</Badge>
+              <Badge className={taskCategory.badgeClass}>{taskCategory.label}</Badge>
             )}
             {!taskCategory && post.challenge_category && (
               <Badge>{post.challenge_category}</Badge>

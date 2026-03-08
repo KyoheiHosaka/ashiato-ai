@@ -20,6 +20,7 @@ export const TASK_CATEGORIES: {
   label: string;
   icon: string;
   color: string;
+  badgeClass: string;
   example: string;
 }[] = [
   {
@@ -27,6 +28,7 @@ export const TASK_CATEGORIES: {
     label: '自動化',
     icon: '⚡',
     color: 'bg-amber-50 text-amber-600 hover:bg-amber-100',
+    badgeClass: 'bg-amber-100 text-amber-700',
     example: '問い合わせをSlackに自動投稿',
   },
   {
@@ -34,6 +36,7 @@ export const TASK_CATEGORIES: {
     label: '分析',
     icon: '📊',
     color: 'bg-purple-50 text-purple-600 hover:bg-purple-100',
+    badgeClass: 'bg-purple-100 text-purple-700',
     example: '売上データから傾向を分析',
   },
   {
@@ -41,6 +44,7 @@ export const TASK_CATEGORIES: {
     label: 'ライティング',
     icon: '✍️',
     color: 'bg-blue-50 text-blue-600 hover:bg-blue-100',
+    badgeClass: 'bg-blue-100 text-blue-700',
     example: 'ブログ記事の下書き作成',
   },
   {
@@ -48,6 +52,7 @@ export const TASK_CATEGORIES: {
     label: 'リサーチ',
     icon: '🔍',
     color: 'bg-cyan-50 text-cyan-600 hover:bg-cyan-100',
+    badgeClass: 'bg-cyan-100 text-cyan-700',
     example: '競合サービスの調査',
   },
   {
@@ -55,6 +60,7 @@ export const TASK_CATEGORIES: {
     label: 'コーディング',
     icon: '💻',
     color: 'bg-green-50 text-green-600 hover:bg-green-100',
+    badgeClass: 'bg-green-100 text-green-700',
     example: '社内ツールの開発',
   },
   {
@@ -62,6 +68,7 @@ export const TASK_CATEGORIES: {
     label: 'デザイン',
     icon: '🎨',
     color: 'bg-pink-50 text-pink-600 hover:bg-pink-100',
+    badgeClass: 'bg-pink-100 text-pink-700',
     example: 'プレゼン資料の作成',
   },
   {
@@ -69,6 +76,7 @@ export const TASK_CATEGORIES: {
     label: 'その他',
     icon: '📦',
     color: 'bg-gray-50 text-gray-600 hover:bg-gray-100',
+    badgeClass: 'bg-gray-100 text-gray-600',
     example: 'その他のAI活用',
   },
 ];

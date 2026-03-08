@@ -63,7 +63,7 @@ export function PostDetail({ post }: PostDetailProps) {
               {taskCategory && (
                 <>
                   <span className="text-base">{taskCategory.icon}</span>
-                  <Badge>{taskCategory.label}</Badge>
+                  <Badge className={taskCategory.badgeClass}>{taskCategory.label}</Badge>
                 </>
               )}
               {!taskCategory && post.challenge_category && (
