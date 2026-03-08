@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, CardContent, Badge, ResultBadge, Button } from '@/components/ui';
+import { Card, CardContent, Badge, ResultBadge, Button, AdPlaceholder } from '@/components/ui';
 import { ReactionButtons } from './reaction-buttons';
 import { BookmarkButton } from './bookmark-button';
 import { CommentSection } from './comment-section';
@@ -161,6 +161,9 @@ export function PostDetail({ post }: PostDetailProps) {
           </div>
         </CardContent>
       </Card>
+
+      {/* 広告スペース */}
+      <AdPlaceholder variant="banner" className="my-6" />
 
       {/* Comments */}
       <CommentSection postId={post.id} />

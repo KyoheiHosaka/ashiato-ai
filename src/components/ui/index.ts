@@ -6,3 +6,4 @@ export { Select, type SelectProps, type SelectOption } from './select';
 export { Chip, ChipGroup, type ChipProps, type ChipGroupProps } from './chip';
 export { Card, CardHeader, CardContent, CardFooter, type CardProps } from './card';
 export { Badge, ResultBadge, type BadgeProps } from './badge';
+export { AdPlaceholder } from './ad-placeholder';

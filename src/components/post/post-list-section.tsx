@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { PostCard } from './post-card';
 import { CategoryCards } from '@/components/filter/category-cards';
-import { Button, Input } from '@/components/ui';
+import { Button, Input, AdPlaceholder } from '@/components/ui';
 import { Search, Loader2, X } from 'lucide-react';
 import { createBrowserClient } from '@/lib/supabase';
 import type { Post, PostFilters, ChallengeCategory } from '@/types';
@@ -192,8 +192,11 @@ export function PostListSection() {
             ))}
           </div>
 
+          {/* 広告スペース */}
+          <AdPlaceholder variant="banner" className="mt-8" />
+
           {hasMore && (
-            <div className="mt-10 flex justify-center">
+            <div className="mt-6 flex justify-center">
               <Button variant="outline" onClick={loadMore}>
                 もっと見る
               </Button>
