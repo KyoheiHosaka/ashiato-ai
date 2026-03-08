@@ -55,14 +55,14 @@ export function Header({ user, onLoginClick, onLogoutClick, onEditProfileClick }
               href="/"
               className="text-sm font-medium text-gray-600 hover:text-gray-900"
             >
-              事例を探す
+              あしあとをたどる
             </Link>
             <Link
               href="/post/new"
               className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-gray-900"
             >
               <PenSquare className="h-4 w-4" />
-              足跡を残す
+              あしあとを残す
             </Link>
           </nav>
 
@@ -154,7 +154,7 @@ export function Header({ user, onLoginClick, onLogoutClick, onEditProfileClick }
                 className="text-sm font-medium text-gray-600 hover:text-gray-900"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                事例を探す
+                あしあとをたどる
               </Link>
               <Link
                 href="/post/new"
@@ -162,7 +162,7 @@ export function Header({ user, onLoginClick, onLogoutClick, onEditProfileClick }
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <PenSquare className="h-4 w-4" />
-                足跡を残す
+                あしあとを残す
               </Link>
               <div className="border-t border-gray-200 pt-4">
                 {user ? (
