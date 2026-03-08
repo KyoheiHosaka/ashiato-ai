@@ -38,8 +38,8 @@ export function Header({ user, onLoginClick, onLogoutClick, onEditProfileClick }
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <span className="text-xl font-bold text-emerald-600">
-              {SITE_CONFIG.name}
+            <span className="text-xl font-bold text-gray-900">
+              my<span className="text-emerald-600">AI</span>logs
             </span>
           </Link>
 

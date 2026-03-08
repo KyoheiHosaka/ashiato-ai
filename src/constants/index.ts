@@ -184,7 +184,8 @@ export const PLACEHOLDERS = {
 
 // --- Site Metadata ---
 export const SITE_CONFIG = {
-  name: 'myailogs',
+  name: 'myAIlogs',
+  brand: 'ASHIATO.ai',
   description: '「この課題、AIでこう解決した」が集まる場所',
   tagline: 'あなたの足跡が、誰かの一歩になる。',
   url: 'https://myailogs.com',

@@ -26,18 +26,12 @@ export function Footer() {
             >
               足跡を残す
             </Link>
-            <Link
-              href="/about"
-              className="text-sm text-gray-600 hover:text-gray-900"
-            >
-              ASHIATO.aiについて
-            </Link>
           </nav>
         </div>
 
         <div className="mt-8 border-t border-gray-200 pt-6 text-center">
           <p className="text-sm text-gray-400">
-            &copy; {new Date().getFullYear()} {SITE_CONFIG.name}. All rights
+            &copy; {new Date().getFullYear()} {SITE_CONFIG.brand}. All rights
             reserved.
           </p>
         </div>
