@@ -87,7 +87,7 @@ export function PostCard({ post }: PostCardProps) {
                 {displayName.charAt(0)}
               </div>
             )}
-            <span className="text-sm text-gray-500">{displayName}</span>
+            <span className="truncate text-sm text-gray-500 max-w-[8rem]">{displayName}</span>
           </div>
 
           {/* Reactions */}

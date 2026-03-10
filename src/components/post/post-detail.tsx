@@ -6,7 +6,15 @@ import { Card, CardContent, Badge, ResultBadge, Button, AdPlaceholder } from '@/
 import { ReactionButtons } from './reaction-buttons';
 import { BookmarkButton } from './bookmark-button';
 import { CommentSection } from './comment-section';
-import { ArrowLeft, ArrowRight, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+
+function XLogo({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className={className} fill="currentColor">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  );
+}
 import Link from 'next/link';
 import { TASK_CATEGORIES, SITE_CONFIG } from '@/constants';
 import type { Post } from '@/types';
@@ -58,7 +66,7 @@ export function PostDetail({ post }: PostDetailProps) {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 rounded-md bg-black px-3 py-1.5 text-xs font-medium text-white hover:bg-gray-800"
             >
-              <X className="h-3 w-3" />
+              <XLogo className="h-3 w-3" />
               ポスト
             </a>
             <button onClick={() => setShowBanner(false)} className="text-emerald-600 hover:text-emerald-800 text-lg leading-none">×</button>
@@ -192,8 +200,8 @@ export function PostDetail({ post }: PostDetailProps) {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 rounded-md border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
               >
-                <X className="h-4 w-4" />
-                Xでシェア
+                <XLogo className="h-4 w-4" />
+                でシェア
               </a>
             </div>
           </div>
