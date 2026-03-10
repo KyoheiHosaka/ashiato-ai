@@ -26,8 +26,8 @@ export function PostCard({ post }: PostCardProps) {
 
   return (
     <Link href={post.slug ? `/logs/${post.slug}` : `/post/${post.id}`}>
-      <Card hover className="h-full">
-        <CardContent>
+      <Card hover className="flex h-full flex-col">
+        <CardContent className="flex-1">
           {/* Task Category Badge */}
           <div className="mb-3 flex items-center gap-2">
             {taskCategory && (
@@ -41,10 +41,10 @@ export function PostCard({ post }: PostCardProps) {
           {/* Title: What → Goal */}
           {post.what && post.goal ? (
             <div className="mb-3">
-              <p className="font-medium text-gray-900">{post.what}</p>
-              <div className="flex items-center gap-1 text-gray-400">
-                <ArrowRight className="h-3 w-3" />
-                <p className="text-sm text-gray-600">{post.goal}</p>
+              <p className="line-clamp-2 font-medium text-gray-900">{post.what}</p>
+              <div className="flex items-start gap-1 text-gray-400">
+                <ArrowRight className="mt-0.5 h-3 w-3 shrink-0" />
+                <p className="line-clamp-1 text-sm text-gray-600">{post.goal}</p>
               </div>
             </div>
           ) : (
