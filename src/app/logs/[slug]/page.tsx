@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 import { HeaderWrapper, Footer } from '@/components/layout';
 import { PostDetail } from '@/components/post/post-detail';
 import { createClient } from '@/lib/supabase/server';
@@ -85,7 +86,9 @@ export default async function LogPage({ params }: Props) {
     <div className="flex min-h-screen flex-col">
       <HeaderWrapper />
       <main className="flex-1 bg-gray-50 py-8">
-        <PostDetail post={{ ...post, reaction_counts: reactionCounts }} />
+        <Suspense>
+          <PostDetail post={{ ...post, reaction_counts: reactionCounts }} />
+        </Suspense>
       </main>
       <Footer />
     </div>

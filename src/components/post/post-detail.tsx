@@ -1,19 +1,39 @@
 'use client';
 
+import { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Card, CardContent, Badge, ResultBadge, Button, AdPlaceholder } from '@/components/ui';
 import { ReactionButtons } from './reaction-buttons';
 import { BookmarkButton } from './bookmark-button';
 import { CommentSection } from './comment-section';
-import { ArrowLeft, ArrowRight, Share2 } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+
+function XLogo({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className={className} fill="currentColor">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  );
+}
 import Link from 'next/link';
-import { TASK_CATEGORIES } from '@/constants';
+import { TASK_CATEGORIES, SITE_CONFIG } from '@/constants';
 import type { Post } from '@/types';
 
 interface PostDetailProps {
   post: Post;
 }
 
+function buildXShareUrl(post: Post, pageUrl: string) {
+  const tools = post.ai_tools?.join('・') || 'AI';
+  const text = `「${post.what || post.challenge_summary}」を${tools}で解決！ #myAIlogs\n`;
+  return `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(pageUrl)}`;
+}
+
 export function PostDetail({ post }: PostDetailProps) {
+  const searchParams = useSearchParams();
+  const isJustCreated = searchParams.get('created') === 'true';
+  const [showBanner, setShowBanner] = useState(isJustCreated);
+
   const displayName = post.is_anonymous
     ? '匿名ユーザー'
     : post.user?.display_name || 'ユーザー';
@@ -31,20 +51,29 @@ export function PostDetail({ post }: PostDetailProps) {
     });
   };
 
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: post.what ? `${post.what} → ${post.goal}` : post.challenge_summary,
-        url: window.location.href,
-      });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      alert('URLをコピーしました');
-    }
-  };
+  const pageUrl = `${SITE_CONFIG.url}/logs/${post.slug}`;
 
   return (
     <div className="mx-auto max-w-3xl px-4">
+      {/* 投稿直後のシェアバナー */}
+      {showBanner && (
+        <div className="mb-4 flex items-center justify-between rounded-lg bg-emerald-50 px-4 py-3 text-emerald-800">
+          <span className="text-sm font-medium">足跡を残しました！Xでシェアしてみませんか？</span>
+          <div className="flex items-center gap-2">
+            <a
+              href={buildXShareUrl(post, pageUrl)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-md bg-black px-3 py-1.5 text-xs font-medium text-white hover:bg-gray-800"
+            >
+              <XLogo className="h-3 w-3" />
+              ポスト
+            </a>
+            <button onClick={() => setShowBanner(false)} className="text-emerald-600 hover:text-emerald-800 text-lg leading-none">×</button>
+          </div>
+        </div>
+      )}
+
       {/* Back link */}
       <Link
         href="/"
@@ -165,10 +194,15 @@ export function PostDetail({ post }: PostDetailProps) {
 
             <div className="flex gap-2">
               <BookmarkButton postId={post.id} />
-              <Button variant="outline" size="sm" onClick={handleShare}>
-                <Share2 className="mr-2 h-4 w-4" />
-                シェア
-              </Button>
+              <a
+                href={buildXShareUrl(post, pageUrl)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-md border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              >
+                <XLogo className="h-4 w-4" />
+                でシェア
+              </a>
             </div>
           </div>
         </CardContent>

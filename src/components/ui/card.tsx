@@ -52,7 +52,7 @@ export function CardFooter({
   className?: string;
 }) {
   return (
-    <div className={cn('mt-4 flex items-center gap-4 border-t border-gray-100 pt-3', className)}>
+    <div className={cn('mt-4 flex min-h-[2.5rem] items-center gap-4 border-t border-gray-100 pt-3', className)}>
       {children}
     </div>
   );
