@@ -162,15 +162,17 @@ export function PostListSection() {
     const load = async () => {
       setIsLoading(true);
       setPage(1);
-      const data = await fetchPostsFromDB(1, filters);
-      setPosts(data);
-      setHasMore(data.length === POSTS_PER_PAGE);
-      setIsLoading(false);
-      // フィルターなしの場合のみキャッシュに保存
-      if (!filters.task_category && !filters.search) {
-        writeCache({ posts: data, page: 1, hasMore: data.length === POSTS_PER_PAGE, scrollY: 0 });
-      } else {
-        clearCache();
+      try {
+        const data = await fetchPostsFromDB(1, filters);
+        setPosts(data);
+        setHasMore(data.length === POSTS_PER_PAGE);
+        if (!filters.task_category && !filters.search) {
+          writeCache({ posts: data, page: 1, hasMore: data.length === POSTS_PER_PAGE, scrollY: 0 });
+        } else {
+          clearCache();
+        }
+      } finally {
+        setIsLoading(false);
       }
     };
     load();
