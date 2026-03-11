@@ -4,6 +4,26 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = { title: 'Admin' };
 
+type AdminPost = {
+  id: string;
+  slug: string | null;
+  what: string | null;
+  task_category: string | null;
+  result: string | null;
+  is_anonymous: boolean;
+  created_at: string;
+  user: { display_name: string } | null;
+};
+
+type AdminComment = {
+  id: string;
+  body: string;
+  is_anonymous: boolean;
+  created_at: string;
+  user: { display_name: string } | null;
+  post: { slug: string | null; what: string | null } | null;
+};
+
 export default async function AdminPage() {
   const supabase = await createClient();
 
@@ -49,11 +69,11 @@ export default async function AdminPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {(posts || []).map((post) => (
+              {((posts || []) as unknown as AdminPost[]).map((post) => (
                 <tr key={post.id} className="hover:bg-gray-50">
                   <td className="whitespace-nowrap px-4 py-2 text-gray-400">{fmt(post.created_at)}</td>
                   <td className="px-4 py-2 text-gray-600">
-                    {post.is_anonymous ? '匿名' : (post.user as any)?.display_name || '-'}
+                    {post.is_anonymous ? '匿名' : post.user?.display_name || '-'}
                   </td>
                   <td className="px-4 py-2 text-gray-800">
                     {post.slug ? (
@@ -82,17 +102,17 @@ export default async function AdminPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {(comments || []).map((comment) => (
+              {((comments || []) as unknown as AdminComment[]).map((comment) => (
                 <tr key={comment.id} className="hover:bg-gray-50">
                   <td className="whitespace-nowrap px-4 py-2 text-gray-400">{fmt(comment.created_at)}</td>
                   <td className="px-4 py-2 text-gray-600">
-                    {comment.is_anonymous ? '匿名' : (comment.user as any)?.display_name || '-'}
+                    {comment.is_anonymous ? '匿名' : comment.user?.display_name || '-'}
                   </td>
                   <td className="max-w-xs truncate px-4 py-2 text-gray-800">{comment.body}</td>
                   <td className="px-4 py-2 text-gray-500">
-                    {(comment.post as any)?.slug ? (
-                      <a href={`/logs/${(comment.post as any).slug}`} className="hover:underline">
-                        {(comment.post as any).what || '-'}
+                    {comment.post?.slug ? (
+                      <a href={`/logs/${comment.post.slug}`} className="hover:underline">
+                        {comment.post.what || '-'}
                       </a>
                     ) : '-'}
                   </td>
