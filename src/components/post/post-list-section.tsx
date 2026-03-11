@@ -181,15 +181,18 @@ export function PostListSection() {
   const loadMore = async () => {
     setIsLoadingMore(true);
     const nextPage = page + 1;
-    const data = await fetchPostsFromDB(nextPage, filters);
-    const newPosts = [...posts, ...data];
-    const newHasMore = data.length === POSTS_PER_PAGE;
-    setPosts(newPosts);
-    setPage(nextPage);
-    setHasMore(newHasMore);
-    setIsLoadingMore(false);
-    if (!filters.task_category && !filters.search) {
-      writeCache({ posts: newPosts, page: nextPage, hasMore: newHasMore, scrollY: window.scrollY });
+    try {
+      const data = await fetchPostsFromDB(nextPage, filters);
+      const newPosts = [...posts, ...data];
+      const newHasMore = data.length === POSTS_PER_PAGE;
+      setPosts(newPosts);
+      setPage(nextPage);
+      setHasMore(newHasMore);
+      if (!filters.task_category && !filters.search) {
+        writeCache({ posts: newPosts, page: nextPage, hasMore: newHasMore, scrollY: window.scrollY });
+      }
+    } finally {
+      setIsLoadingMore(false);
     }
   };
 
