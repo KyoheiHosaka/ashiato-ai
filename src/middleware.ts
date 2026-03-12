@@ -12,6 +12,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(callbackUrl);
   }
 
+  // /auth/callbackはPKCEフローを処理するため、updateSessionをスキップ
+  if (pathname === '/auth/callback') {
+    return NextResponse.next();
+  }
+
   return await updateSession(request);
 }
 

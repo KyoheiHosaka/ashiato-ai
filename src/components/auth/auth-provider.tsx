@@ -7,6 +7,7 @@ import { ProfileSetupModal } from './profile-setup-modal';
 
 interface AuthContextValue {
   user: ReturnType<typeof useAuth>['user'];
+  supabaseUser: ReturnType<typeof useAuth>['supabaseUser'];
   isLoading: boolean;
   isAuthenticated: boolean;
   openLoginModal: (message?: string) => void;
@@ -93,6 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     <AuthContext.Provider
       value={{
         user: currentUser,
+        supabaseUser: auth.supabaseUser,
         isLoading: auth.isLoading,
         isAuthenticated: auth.isAuthenticated,
         openLoginModal,
