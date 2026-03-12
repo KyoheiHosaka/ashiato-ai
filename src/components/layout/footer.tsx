@@ -15,10 +15,13 @@ export function Footer() {
 
         </div>
 
-        <div className="mt-8 border-t border-gray-200 pt-6 text-center">
+        <div className="mt-8 border-t border-gray-200 pt-6 flex flex-col items-center gap-3 md:flex-row md:justify-between">
+          <div className="flex gap-4 text-sm text-gray-400">
+            <Link href="/terms" className="hover:text-gray-600">利用規約</Link>
+            <Link href="/privacy" className="hover:text-gray-600">プライバシーポリシー</Link>
+          </div>
           <p className="text-sm text-gray-400">
-            &copy; {new Date().getFullYear()} {SITE_CONFIG.brand}. All rights
-            reserved.
+            &copy; {new Date().getFullYear()} {SITE_CONFIG.brand}. All rights reserved.
           </p>
         </div>
       </div>
