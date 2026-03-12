@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui';
-import { Menu, X, PenSquare, User, Settings, LogOut } from 'lucide-react';
+import { Menu, X, PenSquare, User, Settings, LogOut, ShieldCheck } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { SITE_CONFIG } from '@/constants';
 
@@ -11,12 +11,13 @@ interface HeaderProps {
     display_name: string;
     avatar_url: string | null;
   } | null;
+  isAdmin?: boolean;
   onLoginClick?: () => void;
   onLogoutClick?: () => void;
   onEditProfileClick?: () => void;
 }
 
-export function Header({ user, onLoginClick, onLogoutClick, onEditProfileClick }: HeaderProps) {
+export function Header({ user, isAdmin, onLoginClick, onLogoutClick, onEditProfileClick }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -111,6 +112,16 @@ export function Header({ user, onLoginClick, onLogoutClick, onEditProfileClick }
                       <Settings className="h-4 w-4" />
                       表示名を変更
                     </button>
+                    {isAdmin && (
+                      <Link
+                        href="/admin"
+                        className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                        onClick={() => setIsUserMenuOpen(false)}
+                      >
+                        <ShieldCheck className="h-4 w-4" />
+                        管理ページ
+                      </Link>
+                    )}
                     <div className="my-1 border-t border-gray-100" />
                     <button
                       onClick={() => {
