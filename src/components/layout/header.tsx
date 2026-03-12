@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui';
-import { Menu, X, PenSquare, User, Settings, LogOut, ShieldCheck } from 'lucide-react';
+import { Menu, X, User, Settings, LogOut, ShieldCheck } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { SITE_CONFIG } from '@/constants';
 
@@ -36,7 +36,7 @@ export function Header({ user, isAdmin, onLoginClick, onLogoutClick, onEditProfi
   return (
     <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur">
       <div className="mx-auto max-w-6xl px-4">
-        <div className="grid h-16 grid-cols-[1fr_auto_1fr] items-center md:grid-cols-[1fr_auto_1fr]">
+        <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             <span className="text-xl font-bold text-gray-900">
@@ -50,25 +50,8 @@ export function Header({ user, isAdmin, onLoginClick, onLogoutClick, onEditProfi
             </span>
           </Link>
 
-          {/* Desktop Navigation - truly centered */}
-          <nav className="hidden items-center gap-6 md:flex">
-            <Link
-              href="/"
-              className="text-sm font-medium text-gray-600 hover:text-gray-900"
-            >
-              あしあとをたどる
-            </Link>
-            <Link
-              href="/post/new"
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-gray-900"
-            >
-              <PenSquare className="h-4 w-4" />
-              あしあとを残す
-            </Link>
-          </nav>
-
           {/* Auth Section */}
-          <div className="hidden items-center justify-end gap-3 md:flex">
+          <div className="hidden items-center gap-3 md:flex">
             {user ? (
               <div className="relative" ref={userMenuRef}>
                 <button
@@ -159,23 +142,8 @@ export function Header({ user, isAdmin, onLoginClick, onLogoutClick, onEditProfi
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div className="border-t border-gray-200 py-4 md:hidden">
-            <nav className="flex flex-col gap-4">
-              <Link
-                href="/"
-                className="text-sm font-medium text-gray-600 hover:text-gray-900"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                あしあとをたどる
-              </Link>
-              <Link
-                href="/post/new"
-                className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-gray-900"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <PenSquare className="h-4 w-4" />
-                あしあとを残す
-              </Link>
-              <div className="border-t border-gray-200 pt-4">
+            <div className="flex flex-col gap-4">
+              <div>
                 {user ? (
                   <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-2 pb-2">
@@ -237,7 +205,7 @@ export function Header({ user, isAdmin, onLoginClick, onLogoutClick, onEditProfi
                   </Button>
                 )}
               </div>
-            </nav>
+            </div>
           </div>
         )}
       </div>
