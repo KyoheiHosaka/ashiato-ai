@@ -22,21 +22,35 @@ export function useAuth() {
 
   const supabase = createBrowserClient();
 
-  // Fetch user profile from users table
+  // Fetch user profile from users table, upsert if missing
   const fetchUserProfile = useCallback(
-    async (userId: string): Promise<User | null> => {
+    async (supabaseUser: import('@supabase/supabase-js').User): Promise<User | null> => {
       const { data, error } = await supabase
         .from('users')
         .select('*')
-        .eq('id', userId)
+        .eq('id', supabaseUser.id)
         .single();
 
-      if (error) {
-        console.error('Error fetching user profile:', error);
-        return null;
-      }
+      if (!error && data) return data;
 
-      return data;
+      // プロフィールが存在しない場合はトリガーの代わりに作成
+      const displayName =
+        supabaseUser.user_metadata?.full_name ||
+        supabaseUser.user_metadata?.name ||
+        supabaseUser.email?.split('@')[0] ||
+        'ユーザー';
+      const { data: created } = await supabase
+        .from('users')
+        .upsert({
+          id: supabaseUser.id,
+          display_name: displayName,
+          avatar_url: supabaseUser.user_metadata?.avatar_url ?? null,
+          provider: supabaseUser.app_metadata?.provider ?? 'google',
+        })
+        .select('*')
+        .single();
+
+      return created ?? null;
     },
     [supabase]
   );
@@ -44,25 +58,16 @@ export function useAuth() {
   // Initialize auth state
   useEffect(() => {
     const initializeAuth = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      if (session?.user) {
-        const userProfile = await fetchUserProfile(session.user.id);
-        setState({
-          user: userProfile,
-          supabaseUser: session.user,
-          session,
-          isLoading: false,
-        });
-      } else {
-        setState({
-          user: null,
-          supabaseUser: null,
-          session: null,
-          isLoading: false,
-        });
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          const userProfile = await fetchUserProfile(session.user);
+          setState({ user: userProfile, supabaseUser: session.user, session, isLoading: false });
+        } else {
+          setState({ user: null, supabaseUser: null, session: null, isLoading: false });
+        }
+      } catch {
+        setState({ user: null, supabaseUser: null, session: null, isLoading: false });
       }
     };
 
@@ -73,7 +78,7 @@ export function useAuth() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session?.user) {
-        const userProfile = await fetchUserProfile(session.user.id);
+        const userProfile = await fetchUserProfile(session.user);
         setState({
           user: userProfile,
           supabaseUser: session.user,
