@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { PostCard } from './post-card';
+import { PostCard, PostCardSkeleton } from './post-card';
 import { CategoryCards } from '@/components/filter/category-cards';
-import { Button, Input, AdPlaceholder } from '@/components/ui';
-import { Search, Loader2, X } from 'lucide-react';
+import { Input, AdPlaceholder } from '@/components/ui';
+import { Search, Loader2, X, ChevronDown } from 'lucide-react';
 import { createBrowserClient } from '@/lib/supabase';
 import type { Post, PostFilters, TaskCategory } from '@/types';
 
@@ -281,8 +281,10 @@ export function PostListSection() {
 
       {/* Posts Grid */}
       {isLoading ? (
-        <div className="flex justify-center py-16">
-          <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <PostCardSkeleton key={i} />
+          ))}
         </div>
       ) : posts.length === 0 ? (
         <div className="py-16 text-center">
@@ -304,17 +306,29 @@ export function PostListSection() {
           <AdPlaceholder variant="banner" className="mt-8" />
 
           {hasMore && (
-            <div className="mt-6 flex justify-center">
-              <Button variant="outline" onClick={loadMore} disabled={isLoadingMore}>
+            <div className="mt-10">
+              <div className="mb-5 flex items-center gap-4">
+                <div className="flex-1 border-t border-gray-200" />
+                <span className="text-xs text-gray-400 tracking-wide">もっと見る</span>
+                <div className="flex-1 border-t border-gray-200" />
+              </div>
+              <button
+                onClick={loadMore}
+                disabled={isLoadingMore}
+                className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl border-2 border-gray-900 bg-white text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-900 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
+              >
                 {isLoadingMore ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="h-4 w-4 animate-spin" />
                     読み込み中...
                   </>
                 ) : (
-                  'もっと見る'
+                  <>
+                    <ChevronDown className="h-4 w-4" />
+                    さらに事例を見る
+                  </>
                 )}
-              </Button>
+              </button>
             </div>
           )}
         </>

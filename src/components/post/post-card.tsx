@@ -4,10 +4,45 @@ import Link from 'next/link';
 import { Card, CardContent, CardFooter, Badge, ResultBadge } from '@/components/ui';
 import { ThumbsUp, Users, ArrowRight } from 'lucide-react';
 import { TASK_CATEGORIES } from '@/constants';
-import type { Post } from '@/types';
+import { cn } from '@/lib/utils';
+import type { Post, Result } from '@/types';
 
 interface PostCardProps {
   post: Post;
+}
+
+const resultAccent: Record<Result, string> = {
+  solved: 'bg-emerald-400',
+  partial: 'bg-amber-400',
+  unsolved: 'bg-gray-300',
+};
+
+export function PostCardSkeleton() {
+  return (
+    <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm overflow-hidden">
+      <div className="h-0.5 -mx-4 -mt-4 mb-4 bg-gray-100 animate-pulse" />
+      <div className="mb-3 h-5 w-16 rounded-full bg-gray-100 animate-pulse" />
+      <div className="mb-3 space-y-2">
+        <div className="h-4 rounded bg-gray-100 animate-pulse" />
+        <div className="h-4 w-3/4 rounded bg-gray-100 animate-pulse" />
+      </div>
+      <div className="mb-3 flex gap-1.5">
+        <div className="h-5 w-16 rounded bg-gray-100 animate-pulse" />
+        <div className="h-5 w-12 rounded bg-gray-100 animate-pulse" />
+      </div>
+      <div className="h-5 w-20 rounded-full bg-gray-100 animate-pulse" />
+      <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-3">
+        <div className="flex items-center gap-2">
+          <div className="h-6 w-6 rounded-full bg-gray-100 animate-pulse" />
+          <div className="h-3 w-20 rounded bg-gray-100 animate-pulse" />
+        </div>
+        <div className="flex gap-3">
+          <div className="h-3 w-8 rounded bg-gray-100 animate-pulse" />
+          <div className="h-3 w-8 rounded bg-gray-100 animate-pulse" />
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export function PostCard({ post }: PostCardProps) {
@@ -27,6 +62,8 @@ export function PostCard({ post }: PostCardProps) {
   return (
     <Link href={post.slug ? `/logs/${post.slug}` : `/post/${post.id}`}>
       <Card hover className="flex h-full flex-col">
+        {/* Result accent bar */}
+        <div className={cn('h-0.5 -mx-4 -mt-4 mb-4', resultAccent[post.result] ?? 'bg-gray-200')} />
         <CardContent className="flex-1">
           {/* Task Category Badge */}
           <div className="mb-3 flex items-center gap-2">
