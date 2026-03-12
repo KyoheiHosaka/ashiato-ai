@@ -59,7 +59,13 @@ export function useAuth() {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) {
+          // 壊れたセッションクッキーを自動クリアしてスタックを防ぐ
+          await supabase.auth.signOut();
+          setState({ user: null, supabaseUser: null, session: null, isLoading: false });
+          return;
+        }
         if (session?.user) {
           const userProfile = await fetchUserProfile(session.user);
           setState({ user: userProfile, supabaseUser: session.user, session, isLoading: false });
@@ -67,6 +73,8 @@ export function useAuth() {
           setState({ user: null, supabaseUser: null, session: null, isLoading: false });
         }
       } catch {
+        // 予期しないエラーでもクッキーをクリアしてスタックを防ぐ
+        await supabase.auth.signOut().catch(() => {});
         setState({ user: null, supabaseUser: null, session: null, isLoading: false });
       }
     };
