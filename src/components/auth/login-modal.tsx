@@ -75,7 +75,7 @@ export function LoginModal({
             {SITE_CONFIG.name}
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            {message || 'ログインして足跡を残しましょう'}
+            {message || 'ログインしてあしあとを残しましょう'}
           </p>
         </div>
 

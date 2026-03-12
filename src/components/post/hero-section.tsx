@@ -19,7 +19,7 @@ export function HeroSection() {
         <Link href="/post/new">
           <Button size="lg" className="gap-2 px-8">
             <PenSquare className="h-5 w-5" />
-            足跡を残す
+            あしあとを残す
           </Button>
         </Link>
       </div>
