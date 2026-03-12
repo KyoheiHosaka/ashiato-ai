@@ -115,21 +115,6 @@ export function useAuth() {
     }
   }, [supabase]);
 
-  // Login with Twitter/X
-  const loginWithTwitter = useCallback(async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'twitter',
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-
-    if (error) {
-      console.error('Twitter login error:', error);
-      throw error;
-    }
-  }, [supabase]);
-
   // Logout
   const logout = useCallback(async () => {
     const { error } = await supabase.auth.signOut();
@@ -143,7 +128,6 @@ export function useAuth() {
   return {
     ...state,
     loginWithGoogle,
-    loginWithTwitter,
     logout,
     isAuthenticated: !!state.session,
   };

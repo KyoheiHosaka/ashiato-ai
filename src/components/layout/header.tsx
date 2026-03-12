@@ -1,10 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { Button } from '@/components/ui';
-import { Menu, X, PenSquare, User, Settings, LogOut, ShieldCheck } from 'lucide-react';
+import { User, Settings, LogOut, ShieldCheck } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
-import { SITE_CONFIG } from '@/constants';
+import { cn } from '@/lib/utils';
 
 interface HeaderProps {
   user?: {
@@ -18,11 +17,9 @@ interface HeaderProps {
 }
 
 export function Header({ user, isAdmin, onLoginClick, onLogoutClick, onEditProfileClick }: HeaderProps) {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
@@ -34,212 +31,100 @@ export function Header({ user, isAdmin, onLoginClick, onLogoutClick, onEditProfi
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur">
-      <div className="mx-auto max-w-6xl px-4">
-        <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <span className="text-xl font-bold text-gray-900">
-              my<span className="text-emerald-600">AI</span>logs
-            </span>
-            <span className="hidden items-center gap-2 md:flex">
-              <span className="text-gray-300">|</span>
-              <span className="text-xs font-semibold tracking-wide text-gray-800">
-                みんなの<span className="text-emerald-600">AI</span>あしあと記録
+    <header className="sticky top-0 z-50 bg-white/98 backdrop-blur-sm">
+      <div className="mx-auto max-w-6xl px-6 py-4 flex items-end justify-between">
+
+        {/* Logotype — thin parts reveal on hover */}
+        <Link href="/" className="group flex flex-col gap-0.5">
+          <span className="text-2xl leading-none tracking-tight">
+            <span className="font-extralight text-gray-300 transition-colors duration-500 group-hover:text-gray-600">my</span>
+            <span className="font-bold text-emerald-500 transition-all duration-300 group-hover:text-emerald-400">AI</span>
+            <span className="font-extralight text-gray-300 transition-colors duration-500 group-hover:text-gray-600">logs</span>
+          </span>
+          <span className="text-[9px] tracking-[0.3em] text-gray-200 transition-colors duration-500 group-hover:text-gray-400">
+            みんなの AI あしあと記録
+          </span>
+        </Link>
+
+        {/* Auth */}
+        {user ? (
+          <div className="relative" ref={userMenuRef}>
+            <button
+              onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+              className="group flex items-center gap-2.5"
+            >
+              {user.avatar_url ? (
+                <img
+                  src={user.avatar_url}
+                  alt={user.display_name}
+                  className="h-7 w-7 rounded-full ring-2 ring-transparent transition-all duration-300 group-hover:ring-gray-200"
+                />
+              ) : (
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-50 text-xs font-medium text-emerald-600 ring-2 ring-transparent transition-all duration-300 group-hover:ring-gray-200">
+                  {user.display_name.charAt(0)}
+                </div>
+              )}
+              <span className="hidden text-xs text-gray-400 transition-colors duration-300 group-hover:text-gray-700 sm:block">
+                {user.display_name}
               </span>
-            </span>
-          </Link>
+            </button>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden items-center gap-6 md:flex">
-            <Link
-              href="/"
-              className="text-sm font-medium text-gray-600 hover:text-gray-900"
+            {/* Dropdown — scale + opacity transition */}
+            <div
+              className={cn(
+                'absolute right-0 top-full mt-3 w-44 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl shadow-black/5',
+                'transition-all duration-150 origin-top-right',
+                isUserMenuOpen
+                  ? 'opacity-100 scale-100 pointer-events-auto'
+                  : 'opacity-0 scale-95 pointer-events-none'
+              )}
             >
-              あしあとをたどる
-            </Link>
-            <Link
-              href="/post/new"
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-gray-900"
-            >
-              <PenSquare className="h-4 w-4" />
-              あしあとを残す
-            </Link>
-          </nav>
-
-          {/* Auth Section */}
-          <div className="hidden items-center gap-3 md:flex">
-            {user ? (
-              <div className="relative" ref={userMenuRef}>
-                <button
-                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="flex items-center gap-2 rounded-lg px-2 py-1 hover:bg-gray-100"
+              <Link
+                href="/profile"
+                className="flex items-center gap-2 px-4 py-2.5 text-xs text-gray-500 transition-colors hover:bg-gray-50 hover:text-gray-900"
+                onClick={() => setIsUserMenuOpen(false)}
+              >
+                <User className="h-3.5 w-3.5" />
+                マイページ
+              </Link>
+              <button
+                onClick={() => { setIsUserMenuOpen(false); onEditProfileClick?.(); }}
+                className="flex w-full items-center gap-2 px-4 py-2.5 text-xs text-gray-500 transition-colors hover:bg-gray-50 hover:text-gray-900"
+              >
+                <Settings className="h-3.5 w-3.5" />
+                表示名を変更
+              </button>
+              {isAdmin && (
+                <Link
+                  href="/admin"
+                  className="flex items-center gap-2 px-4 py-2.5 text-xs text-gray-500 transition-colors hover:bg-gray-50 hover:text-gray-900"
+                  onClick={() => setIsUserMenuOpen(false)}
                 >
-                  {user.avatar_url ? (
-                    <img
-                      src={user.avatar_url}
-                      alt={user.display_name}
-                      className="h-8 w-8 rounded-full"
-                    />
-                  ) : (
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-sm font-medium text-emerald-600">
-                      {user.display_name.charAt(0)}
-                    </div>
-                  )}
-                  <span className="text-sm font-medium text-gray-700">
-                    {user.display_name}
-                  </span>
-                </button>
-
-                {/* Dropdown Menu */}
-                {isUserMenuOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-48 rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
-                    <Link
-                      href="/profile"
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                      onClick={() => setIsUserMenuOpen(false)}
-                    >
-                      <User className="h-4 w-4" />
-                      マイページ
-                    </Link>
-                    <button
-                      onClick={() => {
-                        setIsUserMenuOpen(false);
-                        onEditProfileClick?.();
-                      }}
-                      className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                    >
-                      <Settings className="h-4 w-4" />
-                      表示名を変更
-                    </button>
-                    {isAdmin && (
-                      <Link
-                        href="/admin"
-                        className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                        onClick={() => setIsUserMenuOpen(false)}
-                      >
-                        <ShieldCheck className="h-4 w-4" />
-                        管理ページ
-                      </Link>
-                    )}
-                    <div className="my-1 border-t border-gray-100" />
-                    <button
-                      onClick={() => {
-                        setIsUserMenuOpen(false);
-                        onLogoutClick?.();
-                      }}
-                      className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
-                    >
-                      <LogOut className="h-4 w-4" />
-                      ログアウト
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <Button variant="primary" size="sm" onClick={onLoginClick}>
-                ログイン
-              </Button>
-            )}
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                  管理ページ
+                </Link>
+              )}
+              <div className="border-t border-gray-50" />
+              <button
+                onClick={() => { setIsUserMenuOpen(false); onLogoutClick?.(); }}
+                className="flex w-full items-center gap-2 px-4 py-2.5 text-xs text-red-400 transition-colors hover:bg-gray-50 hover:text-red-600"
+              >
+                <LogOut className="h-3.5 w-3.5" />
+                ログアウト
+              </button>
+            </div>
           </div>
-
-          {/* Mobile Menu Button */}
+        ) : (
+          /* Login — underline grows left → right */
           <button
-            className="md:hidden"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            onClick={onLoginClick}
+            className="group relative text-xs text-gray-400 transition-colors duration-300 hover:text-gray-900"
           >
-            {isMobileMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
+            ログイン
+            <span className="absolute -bottom-0.5 left-0 h-px w-0 bg-current transition-all duration-300 group-hover:w-full" />
           </button>
-        </div>
-
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="border-t border-gray-200 py-4 md:hidden">
-            <nav className="flex flex-col gap-4">
-              <Link
-                href="/"
-                className="text-sm font-medium text-gray-600 hover:text-gray-900"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                あしあとをたどる
-              </Link>
-              <Link
-                href="/post/new"
-                className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-gray-900"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <PenSquare className="h-4 w-4" />
-                あしあとを残す
-              </Link>
-              <div className="border-t border-gray-200 pt-4">
-                {user ? (
-                  <div className="flex flex-col gap-2">
-                    <div className="flex items-center gap-2 pb-2">
-                      {user.avatar_url ? (
-                        <img
-                          src={user.avatar_url}
-                          alt={user.display_name}
-                          className="h-8 w-8 rounded-full"
-                        />
-                      ) : (
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-sm font-medium text-emerald-600">
-                          {user.display_name.charAt(0)}
-                        </div>
-                      )}
-                      <span className="text-sm font-medium text-gray-700">
-                        {user.display_name}
-                      </span>
-                    </div>
-                    <Link
-                      href="/profile"
-                      className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      <User className="h-4 w-4" />
-                      マイページ
-                    </Link>
-                    <button
-                      onClick={() => {
-                        setIsMobileMenuOpen(false);
-                        onEditProfileClick?.();
-                      }}
-                      className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900"
-                    >
-                      <Settings className="h-4 w-4" />
-                      表示名を変更
-                    </button>
-                    <button
-                      onClick={() => {
-                        setIsMobileMenuOpen(false);
-                        onLogoutClick?.();
-                      }}
-                      className="flex items-center gap-2 text-sm text-red-600 hover:text-red-700"
-                    >
-                      <LogOut className="h-4 w-4" />
-                      ログアウト
-                    </button>
-                  </div>
-                ) : (
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    className="w-full"
-                    onClick={() => {
-                      onLoginClick?.();
-                      setIsMobileMenuOpen(false);
-                    }}
-                  >
-                    ログイン
-                  </Button>
-                )}
-              </div>
-            </nav>
-          </div>
         )}
+
       </div>
     </header>
   );

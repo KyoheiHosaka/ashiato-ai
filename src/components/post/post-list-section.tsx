@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { PostCard } from './post-card';
+import { PostCard, PostCardSkeleton } from './post-card';
 import { CategoryCards } from '@/components/filter/category-cards';
-import { Button, Input, AdPlaceholder } from '@/components/ui';
-import { Search, Loader2, X } from 'lucide-react';
+import { AdPlaceholder } from '@/components/ui';
+import { Search, Loader2, ChevronDown } from 'lucide-react';
 import { createBrowserClient } from '@/lib/supabase';
-import type { Post, PostFilters, TaskCategory } from '@/types';
+import { cn } from '@/lib/utils';
+import type { Post, PostFilters, TaskCategory, Result } from '@/types';
 
 const POSTS_PER_PAGE = 12;
 const CACHE_KEY = 'ashiato_post_list';
@@ -60,6 +61,9 @@ async function fetchPostsFromDB(
   if (currentFilters.task_category) {
     query = query.eq('task_category', currentFilters.task_category);
   }
+  if (currentFilters.result) {
+    query = query.eq('result', currentFilters.result);
+  }
   if (currentFilters.search) {
     query = query.or(
       `what.ilike.%${currentFilters.search}%,goal.ilike.%${currentFilters.search}%,challenge_summary.ilike.%${currentFilters.search}%`
@@ -97,7 +101,6 @@ export function PostListSection() {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [showSearch, setShowSearch] = useState(false);
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // フィルターeffectがキャッシュ復元時にfetchしないようにするフラグ
@@ -166,7 +169,7 @@ export function PostListSection() {
         const data = await fetchPostsFromDB(1, filters);
         setPosts(data);
         setHasMore(data.length === POSTS_PER_PAGE);
-        if (!filters.task_category && !filters.search) {
+        if (!filters.task_category && !filters.result && !filters.search) {
           writeCache({ posts: data, page: 1, hasMore: data.length === POSTS_PER_PAGE, scrollY: 0 });
         } else {
           clearCache();
@@ -188,7 +191,7 @@ export function PostListSection() {
       setPosts(newPosts);
       setPage(nextPage);
       setHasMore(newHasMore);
-      if (!filters.task_category && !filters.search) {
+      if (!filters.task_category && !filters.result && !filters.search) {
         writeCache({ posts: newPosts, page: nextPage, hasMore: newHasMore, scrollY: window.scrollY });
       }
     } finally {
@@ -198,7 +201,12 @@ export function PostListSection() {
 
   const handleCategoryChange = (category: TaskCategory | null) => {
     clearCache();
-    setFilters({ ...filters, task_category: category || undefined });
+    setFilters((prev) => ({ ...prev, task_category: category || undefined }));
+  };
+
+  const handleResultChange = (result: Result | null) => {
+    clearCache();
+    setFilters((prev) => ({ ...prev, result: result || undefined }));
   };
 
   const handleSearchChange = (value: string) => {
@@ -210,86 +218,63 @@ export function PostListSection() {
     }, 400);
   };
 
-  const clearFilters = () => {
-    setFilters({});
-    setSearchInput('');
-    setShowSearch(false);
-  };
-
-  const hasActiveFilters = filters.task_category || filters.search;
+  const RESULT_OPTIONS: { value: Result; label: string }[] = [
+    { value: 'solved', label: '解決' },
+    { value: 'partial', label: '部分解決' },
+    { value: 'unsolved', label: '未解決' },
+  ];
 
   return (
     <section id="posts" className="mx-auto max-w-5xl px-4 pb-16">
-      {/* Section Header */}
-      <div className="mb-8 flex items-center justify-between">
-        <h2 className="text-xl font-bold text-gray-900">事例を探す</h2>
-        <button
-          onClick={() => setShowSearch(!showSearch)}
-          className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700"
-        >
-          <Search className="h-4 w-4" />
-          キーワード検索
-        </button>
+      {/* Search */}
+      <div className="mb-4 relative">
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+        <input
+          type="text"
+          placeholder="キーワードで検索..."
+          value={searchInput}
+          onChange={(e) => handleSearchChange(e.target.value)}
+          className="w-full rounded-xl border border-gray-200 bg-white py-2.5 pl-9 pr-4 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-gray-400 focus:ring-0"
+        />
       </div>
 
-      {/* Search Input */}
-      {showSearch && (
-        <div className="mb-6">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-            <Input
-              placeholder="課題やキーワードで検索..."
-              value={searchInput}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-        </div>
-      )}
-
-      {/* Category Cards */}
-      <div className="mb-8">
+      {/* Filters */}
+      <div className="mb-8 space-y-2.5">
         <CategoryCards
           selected={filters.task_category || null}
           onChange={handleCategoryChange}
         />
-      </div>
-
-      {/* Active Filters */}
-      {hasActiveFilters && (
-        <div className="mb-6 flex items-center gap-2">
-          <span className="text-sm text-gray-500">絞り込み中:</span>
-          {filters.task_category && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-3 py-1 text-sm text-emerald-700">
-              {filters.task_category}
-            </span>
-          )}
-          {filters.search && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700">
-              「{filters.search}」
-            </span>
-          )}
-          <button
-            onClick={clearFilters}
-            className="ml-2 flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600"
-          >
-            <X className="h-3 w-3" />
-            クリア
-          </button>
+        <div className="flex flex-wrap gap-2">
+          {RESULT_OPTIONS.map(({ value, label }) => (
+            <button
+              key={value}
+              onClick={() => handleResultChange(filters.result === value ? null : value)}
+              className={cn(
+                'rounded-full border px-3 py-1.5 text-sm transition-all',
+                filters.result === value
+                  ? 'border-gray-900 bg-gray-900 text-white'
+                  : 'border-gray-200 bg-white text-gray-600 hover:border-gray-400'
+              )}
+            >
+              {label}
+            </button>
+          ))}
         </div>
-      )}
+      </div>
 
       {/* Posts Grid */}
       {isLoading ? (
-        <div className="flex justify-center py-16">
-          <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <PostCardSkeleton key={i} />
+          ))}
         </div>
       ) : posts.length === 0 ? (
         <div className="py-16 text-center">
           <p className="text-gray-400">
-            {hasActiveFilters
+            {(filters.task_category || filters.result || filters.search)
               ? '該当する事例が見つかりませんでした'
-              : 'まだ投稿がありません。最初の足跡を残しましょう！'}
+              : 'まだ投稿がありません。最初のあしあとを残しましょう！'}
           </p>
         </div>
       ) : (
@@ -304,17 +289,29 @@ export function PostListSection() {
           <AdPlaceholder variant="banner" className="mt-8" />
 
           {hasMore && (
-            <div className="mt-6 flex justify-center">
-              <Button variant="outline" onClick={loadMore} disabled={isLoadingMore}>
+            <div className="mt-10">
+              <div className="mb-5 flex items-center gap-4">
+                <div className="flex-1 border-t border-gray-200" />
+                <span className="text-xs text-gray-400 tracking-wide">もっと見る</span>
+                <div className="flex-1 border-t border-gray-200" />
+              </div>
+              <button
+                onClick={loadMore}
+                disabled={isLoadingMore}
+                className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl border-2 border-gray-900 bg-white text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-900 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
+              >
                 {isLoadingMore ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="h-4 w-4 animate-spin" />
                     読み込み中...
                   </>
                 ) : (
-                  'もっと見る'
+                  <>
+                    <ChevronDown className="h-4 w-4" />
+                    さらに事例を見る
+                  </>
                 )}
-              </Button>
+              </button>
             </div>
           )}
         </>

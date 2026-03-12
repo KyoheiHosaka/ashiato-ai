@@ -15,20 +15,20 @@ export function CategoryCards({ selected, onChange }: CategoryCardsProps) {
   };
 
   return (
-    <div className="grid grid-cols-4 gap-3 sm:grid-cols-7">
-      {TASK_CATEGORIES.map(({ value, label, icon, color }) => (
+    <div className="flex flex-wrap gap-2">
+      {TASK_CATEGORIES.map(({ value, label, icon }) => (
         <button
           key={value}
           onClick={() => handleClick(value)}
           className={cn(
-            'flex flex-col items-center gap-2 rounded-xl p-4 transition-all',
-            color,
-            selected === value && 'ring-2 ring-emerald-500 ring-offset-2',
-            selected && selected !== value && 'opacity-50'
+            'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm transition-all',
+            selected === value
+              ? 'border-gray-900 bg-gray-900 text-white'
+              : 'border-gray-200 bg-white text-gray-600 hover:border-gray-400'
           )}
         >
-          <span className="text-2xl">{icon}</span>
-          <span className="text-xs font-medium">{label}</span>
+          <span className="text-sm">{icon}</span>
+          {label}
         </button>
       ))}
     </div>

@@ -67,14 +67,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const handleTwitterLogin = async () => {
-    try {
-      await auth.loginWithTwitter();
-    } catch (error) {
-      console.error('Twitter login failed:', error);
-    }
-  };
-
   const handleProfileUpdate = (newName: string) => {
     if (currentUser) {
       setCurrentUser({ ...currentUser, display_name: newName });
@@ -109,7 +101,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isOpen={isLoginModalOpen}
         onClose={closeLoginModal}
         onGoogleLogin={handleGoogleLogin}
-        onTwitterLogin={handleTwitterLogin}
         message={loginMessage}
       />
       {currentUser && (
