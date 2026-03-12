@@ -36,8 +36,8 @@ export default function PrivacyPage() {
                 <li>アクセスログ（IPアドレス、ブラウザ情報等）</li>
               </ul>
               <p className="mt-2">
-                上記の情報は、Google または X（旧Twitter）のOAuth認証を通じて取得します。
-                認証時に取得する情報の範囲は各プラットフォームの仕様に従います。
+                上記の情報は、GoogleのOAuth認証を通じて取得します。
+                認証時に取得する情報の範囲はGoogleの仕様に従います。
               </p>
             </section>
 
