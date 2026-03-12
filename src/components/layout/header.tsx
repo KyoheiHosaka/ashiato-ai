@@ -36,7 +36,7 @@ export function Header({ user, isAdmin, onLoginClick, onLogoutClick, onEditProfi
   return (
     <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur">
       <div className="mx-auto max-w-6xl px-4">
-        <div className="flex h-16 items-center justify-between">
+        <div className="grid h-16 grid-cols-[1fr_auto_1fr] items-center md:grid-cols-[1fr_auto_1fr]">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             <span className="text-xl font-bold text-gray-900">
@@ -50,7 +50,7 @@ export function Header({ user, isAdmin, onLoginClick, onLogoutClick, onEditProfi
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation - truly centered */}
           <nav className="hidden items-center gap-6 md:flex">
             <Link
               href="/"
@@ -68,7 +68,7 @@ export function Header({ user, isAdmin, onLoginClick, onLogoutClick, onEditProfi
           </nav>
 
           {/* Auth Section */}
-          <div className="hidden items-center gap-3 md:flex">
+          <div className="hidden items-center justify-end gap-3 md:flex">
             {user ? (
               <div className="relative" ref={userMenuRef}>
                 <button
@@ -145,7 +145,7 @@ export function Header({ user, isAdmin, onLoginClick, onLogoutClick, onEditProfi
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden"
+            className="flex justify-end md:hidden"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? (
