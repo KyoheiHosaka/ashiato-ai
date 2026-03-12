@@ -1,29 +1,32 @@
 import Link from 'next/link';
-import { SITE_CONFIG } from '@/constants';
 
 export function Footer() {
   return (
-    <footer className="border-t border-gray-200 bg-gray-50">
-      <div className="mx-auto max-w-6xl px-4 py-8">
-        <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-          <div className="flex flex-col items-center gap-1 md:items-start">
-            <span className="text-lg font-bold text-emerald-600">
-              {SITE_CONFIG.name}
-            </span>
-            <p className="text-sm text-gray-500">{SITE_CONFIG.tagline}</p>
-          </div>
+    <footer className="bg-gray-950 px-6 pt-10 pb-8">
+      <div className="mx-auto max-w-6xl">
 
+        {/* Architectural wordmark */}
+        <div className="mb-6 overflow-hidden">
+          <span className="block select-none text-[5rem] font-thin leading-none tracking-tighter text-white/[0.06] md:text-[8rem]">
+            myAIlogs
+          </span>
         </div>
 
-        <div className="mt-8 border-t border-gray-200 pt-6 flex flex-col items-center gap-3 md:flex-row md:justify-between">
-          <div className="flex gap-4 text-sm text-gray-400">
-            <Link href="/terms" className="hover:text-gray-600">利用規約</Link>
-            <Link href="/privacy" className="hover:text-gray-600">プライバシーポリシー</Link>
+        {/* Meta */}
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex gap-5">
+            <Link href="/terms" className="text-[11px] text-gray-600 transition-colors hover:text-gray-400">
+              利用規約
+            </Link>
+            <Link href="/privacy" className="text-[11px] text-gray-600 transition-colors hover:text-gray-400">
+              プライバシーポリシー
+            </Link>
           </div>
-          <p className="text-sm text-gray-400">
-            &copy; {new Date().getFullYear()} {SITE_CONFIG.brand}. All rights reserved.
+          <p className="text-[11px] text-gray-700">
+            © {new Date().getFullYear()} myAIlogs運営事務局
           </p>
         </div>
+
       </div>
     </footer>
   );
