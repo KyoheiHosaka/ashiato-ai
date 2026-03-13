@@ -83,12 +83,12 @@ export function SimplePostForm() {
     <div className="mx-auto max-w-2xl">
       {/* ── Page stack — diagonal tilt for visibility ── */}
       <div className="relative pb-4">
-        {/* Sheet 3 (deepest) — rotated right */}
-        <div className="absolute inset-0 origin-bottom rounded-2xl bg-[#a09b88] shadow-md" style={{ transform: 'rotate(3deg) translateY(6px)' }} />
-        {/* Sheet 2 — rotated left */}
-        <div className="absolute inset-0 origin-bottom rounded-2xl bg-[#c4bfac] shadow-md" style={{ transform: 'rotate(-1.5deg) translateY(3px)' }} />
-        {/* Sheet 1 — slight tilt */}
-        <div className="absolute inset-0 origin-bottom rounded-2xl bg-[#ddd9cc] shadow-sm" style={{ transform: 'rotate(0.75deg) translateY(1.5px)' }} />
+        {/* Sheet 3 (deepest) */}
+        <div className="absolute inset-0 origin-bottom rounded-2xl bg-[#a09b88] shadow-md" style={{ transform: 'rotate(3.5deg) translateY(6px)' }} />
+        {/* Sheet 2 */}
+        <div className="absolute inset-0 origin-bottom rounded-2xl bg-[#c4bfac] shadow-md" style={{ transform: 'rotate(2deg) translateY(3px)' }} />
+        {/* Sheet 1 */}
+        <div className="absolute inset-0 origin-bottom rounded-2xl bg-[#ddd9cc] shadow-sm" style={{ transform: 'rotate(0.8deg) translateY(1.5px)' }} />
 
         {/* ── Main page ── */}
         <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-gray-400/40">
