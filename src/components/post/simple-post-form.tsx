@@ -2,31 +2,18 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button, Input, ChipGroup, Card } from '@/components/ui';
+import { ChipGroup } from '@/components/ui';
 import { useAuthContext } from '@/components/auth';
 import { createBrowserClient } from '@/lib/supabase';
 import { TASK_CATEGORIES, AI_TOOLS, RESULTS, VALIDATION, PLACEHOLDERS } from '@/constants';
 import { generateUniqueSlug } from '@/lib/utils';
-import { Textarea } from '@/components/ui';
 import type { TaskCategory, AITool, Result } from '@/types';
 import { cn } from '@/lib/utils';
-import { ArrowRight, Check, Info } from 'lucide-react';
+import { ArrowRight, Check } from 'lucide-react';
 
-// Pre-computed confetti positions (12 particles, evenly distributed around a circle)
-const CONFETTI = [
-  { x:  80, y:   0, color: '#10b981', delay: 0.00 },
-  { x:  69, y:  40, color: '#fbbf24', delay: 0.04 },
-  { x:  40, y:  69, color: '#a78bfa', delay: 0.08 },
-  { x:   0, y:  80, color: '#34d399', delay: 0.12 },
-  { x: -40, y:  69, color: '#f59e0b', delay: 0.16 },
-  { x: -69, y:  40, color: '#6ee7b7', delay: 0.20 },
-  { x: -80, y:   0, color: '#10b981', delay: 0.24 },
-  { x: -69, y: -40, color: '#fbbf24', delay: 0.28 },
-  { x: -40, y: -69, color: '#a78bfa', delay: 0.32 },
-  { x:   0, y: -80, color: '#34d399', delay: 0.36 },
-  { x:  40, y: -69, color: '#f59e0b', delay: 0.40 },
-  { x:  69, y: -40, color: '#6ee7b7', delay: 0.44 },
-];
+
+const STEP_LABEL = 'text-[11px] font-bold tracking-[0.18em] text-emerald-600 uppercase mb-3 flex items-center gap-2';
+const RULED_LINE = 'border-b border-dashed border-gray-200 pb-7 mb-7';
 
 export function SimplePostForm() {
   const router = useRouter();
@@ -46,81 +33,41 @@ export function SimplePostForm() {
     is_anonymous: false,
   });
 
-  const updateField = <K extends keyof typeof formData>(
-    key: K,
-    value: (typeof formData)[K]
-  ) => {
+  const updateField = <K extends keyof typeof formData>(key: K, value: (typeof formData)[K]) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
     setErrors((prev) => ({ ...prev, [key]: '' }));
   };
 
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
-
-    if (!formData.task_category) {
-      newErrors.task_category = 'カテゴリを選択してください';
-    }
-    if (!formData.what.trim()) {
-      newErrors.what = '入力してください';
-    }
-    if (!formData.goal.trim()) {
-      newErrors.goal = '入力してください';
-    }
-    if (formData.ai_tools.length === 0) {
-      newErrors.ai_tools = '使用したAIを選択してください';
-    }
-    if (!formData.result) {
-      newErrors.result = '結果を選択してください';
-    }
-
+    if (!formData.task_category) newErrors.task_category = 'カテゴリを選択してください';
+    if (!formData.what.trim())   newErrors.what = '入力してください';
+    if (!formData.goal.trim())   newErrors.goal = '入力してください';
+    if (formData.ai_tools.length === 0) newErrors.ai_tools = '使用したAIを選択してください';
+    if (!formData.result)        newErrors.result = '結果を選択してください';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async () => {
-    if (!isAuthenticated) {
-      openLoginModal('投稿するにはログインが必要です');
-      return;
-    }
-
+    if (!isAuthenticated) { openLoginModal('投稿するにはログインが必要です'); return; }
     if (!validate()) return;
-
     setIsSubmitting(true);
-
     try {
       const supabase = createBrowserClient();
-
-      const slug = await generateUniqueSlug(
-        supabase,
-        formData.ai_tools[0],
-        formData.what,
-        formData.result as import('@/types').Result
-      );
-
-      const { data, error } = await supabase
-        .from('posts')
-        .insert({
-          user_id: user!.id,
-          slug,
-          task_category: formData.task_category,
-          what: formData.what,
-          goal: formData.goal,
-          ai_tools: formData.ai_tools,
-          result: formData.result,
-          result_detail: formData.result_detail || null,
-          prompt: formData.prompt || null,
-          is_anonymous: formData.is_anonymous,
-        })
-        .select()
-        .single();
-
+      const slug = await generateUniqueSlug(supabase, formData.ai_tools[0], formData.what, formData.result as Result);
+      const { data, error } = await supabase.from('posts').insert({
+        user_id: user!.id, slug,
+        task_category: formData.task_category,
+        what: formData.what, goal: formData.goal,
+        ai_tools: formData.ai_tools, result: formData.result,
+        result_detail: formData.result_detail || null,
+        prompt: formData.prompt || null,
+        is_anonymous: formData.is_anonymous,
+      }).select().single();
       if (error) throw error;
-
-      // Catharsis: show success animation, then navigate
       setShowSuccess(true);
-      setTimeout(() => {
-        router.push(`/logs/${data.slug}?created=true`);
-      }, 2000);
+      setTimeout(() => router.push(`/logs/${data.slug}?created=true`), 2000);
     } catch (error) {
       console.error('Error creating post:', error);
       setErrors({ submit: '投稿に失敗しました。もう一度お試しください。' });
@@ -128,108 +75,122 @@ export function SimplePostForm() {
     }
   };
 
-  const selectedCategory = TASK_CATEGORIES.find(
-    (c) => c.value === formData.task_category
-  );
+  const selectedCategory = TASK_CATEGORIES.find((c) => c.value === formData.task_category);
 
   return (
     <div className="mx-auto max-w-2xl">
-      <div className="relative">
-        <Card className="p-6 md:p-8">
+      <div className="relative overflow-hidden rounded-2xl shadow-xl shadow-gray-200/80">
 
-          {/* Disclaimer */}
-          <div className="mb-7 flex gap-2.5 rounded-lg bg-gray-50 px-4 py-3 text-xs text-gray-500">
-            <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-gray-400" />
-            <p>
-              ここは自分のAI活用記録をみんなと共有する場所です。
-              投稿すると他のメンバーがコメントやリアクションを送ることがありますが、
-              <span className="font-medium text-gray-600">必ずしも回答やフィードバックがつくことを保証するものではありません。</span>
-              まずは自分の記録として気軽に残しましょう。
-            </p>
+        {/* ── Notepad header ── */}
+        <div className="relative bg-emerald-500 px-6 pb-5 pt-3">
+          {/* Spiral holes */}
+          <div className="absolute -top-0.5 left-0 right-0 flex justify-around px-6">
+            {[...Array(11)].map((_, i) => (
+              <div key={i} className="h-4 w-4 rounded-full bg-white/80 shadow-[inset_0_1px_3px_rgba(0,0,0,0.2)]" />
+            ))}
           </div>
+          <div className="pt-5">
+            <p className="text-[10px] font-medium tracking-[0.25em] text-emerald-100">MY AI LOGS</p>
+            <h2 className="text-base font-bold text-white">AI あしあとメモ</h2>
+          </div>
+        </div>
 
-          {/* Task Category */}
-          <div className="mb-8">
-            <label className="mb-3 block text-sm font-medium text-gray-700">
+        {/* ── Paper body ── */}
+        <div
+          className="bg-[#fffef7] px-6 pb-8 pt-7"
+          style={{
+            backgroundImage:
+              'repeating-linear-gradient(transparent, transparent 39px, #e9edf2 39px, #e9edf2 40px)',
+            backgroundPositionY: '4px',
+          }}
+        >
+
+          {/* 01 — Category */}
+          <div className={RULED_LINE}>
+            <p className={STEP_LABEL}>
+              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[9px] text-white font-black">1</span>
               どんなタスク？
-            </label>
+            </p>
             <div className="grid grid-cols-4 gap-2 sm:grid-cols-7">
-              {TASK_CATEGORIES.map((category) => (
+              {TASK_CATEGORIES.map((cat) => (
                 <button
-                  key={category.value}
+                  key={cat.value}
                   type="button"
-                  onClick={() => updateField('task_category', category.value)}
+                  onClick={() => updateField('task_category', cat.value)}
                   className={cn(
-                    'flex flex-col items-center gap-1 rounded-xl p-3 transition-all',
-                    category.color,
-                    formData.task_category === category.value &&
-                      'ring-2 ring-emerald-500 ring-offset-2'
+                    'flex flex-col items-center gap-1.5 rounded-xl p-2.5 text-center transition-all duration-150',
+                    cat.color,
+                    formData.task_category === cat.value
+                      ? 'scale-110 ring-2 ring-emerald-500 ring-offset-2 shadow-md'
+                      : 'hover:scale-105'
                   )}
                 >
-                  <span className="text-xl">{category.icon}</span>
-                  <span className="text-xs font-medium">{category.label}</span>
+                  <span className="text-2xl leading-none">{cat.icon}</span>
+                  <span className="text-[10px] font-semibold leading-tight">{cat.label}</span>
                 </button>
               ))}
             </div>
-            {errors.task_category && (
-              <p className="mt-2 text-sm text-red-600">{errors.task_category}</p>
-            )}
+            {errors.task_category && <p className="mt-2 text-xs text-red-500">{errors.task_category}</p>}
           </div>
 
-          {/* What + Goal */}
-          <div className="mb-8">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
+          {/* 02 — What → Goal */}
+          <div className={RULED_LINE}>
+            <p className={STEP_LABEL}>
+              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[9px] text-white font-black">2</span>
+              何をどうしたかった？
+            </p>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
               <div className="flex-1">
-                <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                  何を
-                </label>
-                <Input
+                <p className="mb-1 text-[11px] text-gray-400">何を</p>
+                <input
+                  type="text"
                   placeholder={PLACEHOLDERS.WHAT}
                   value={formData.what}
                   onChange={(e) => updateField('what', e.target.value)}
                   maxLength={VALIDATION.WHAT_MAX_LENGTH}
-                  error={errors.what}
+                  className="w-full border-0 border-b-2 border-gray-300 bg-transparent px-0 py-1.5 text-sm placeholder:text-gray-300 focus:border-emerald-500 focus:outline-none focus:ring-0"
                 />
+                {errors.what && <p className="mt-1 text-xs text-red-500">{errors.what}</p>}
               </div>
-              <ArrowRight className="mt-8 hidden h-5 w-5 text-gray-300 sm:block" />
+              <ArrowRight className="hidden h-5 w-5 shrink-0 text-gray-300 sm:block mb-2" />
               <div className="flex-1">
-                <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                  どうしたかった
-                </label>
-                <Input
+                <p className="mb-1 text-[11px] text-gray-400">どうしたかった</p>
+                <input
+                  type="text"
                   placeholder={PLACEHOLDERS.GOAL}
                   value={formData.goal}
                   onChange={(e) => updateField('goal', e.target.value)}
                   maxLength={VALIDATION.GOAL_MAX_LENGTH}
-                  error={errors.goal}
+                  className="w-full border-0 border-b-2 border-gray-300 bg-transparent px-0 py-1.5 text-sm placeholder:text-gray-300 focus:border-emerald-500 focus:outline-none focus:ring-0"
                 />
+                {errors.goal && <p className="mt-1 text-xs text-red-500">{errors.goal}</p>}
               </div>
             </div>
             {selectedCategory && (
-              <p className="mt-2 text-xs text-gray-400">
-                例: {selectedCategory.example}
-              </p>
+              <p className="mt-2 text-[11px] text-gray-400">例: {selectedCategory.example}</p>
             )}
           </div>
 
-          {/* AI Tools */}
-          <div className="mb-8">
+          {/* 03 — AI Tools */}
+          <div className={RULED_LINE}>
+            <p className={STEP_LABEL}>
+              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[9px] text-white font-black">3</span>
+              使ったAI
+            </p>
             <ChipGroup
-              label="使ったAI"
               options={AI_TOOLS}
               selected={formData.ai_tools}
-              onChange={(selected) =>
-                updateField('ai_tools', selected as AITool[])
-              }
+              onChange={(selected) => updateField('ai_tools', selected as AITool[])}
               error={errors.ai_tools}
             />
           </div>
 
-          {/* Result */}
-          <div className="mb-8">
-            <label className="mb-3 block text-sm font-medium text-gray-700">
-              結果
-            </label>
+          {/* 04 — Result */}
+          <div className={RULED_LINE}>
+            <p className={STEP_LABEL}>
+              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[9px] text-white font-black">4</span>
+              結果どうだった？
+            </p>
             <div className="flex gap-3">
               {RESULTS.map((result) => (
                 <button
@@ -237,27 +198,27 @@ export function SimplePostForm() {
                   type="button"
                   onClick={() => updateField('result', result.value)}
                   className={cn(
-                    'flex-1 rounded-xl border-2 py-3 text-center transition-all',
+                    'flex flex-1 flex-col items-center gap-2 rounded-2xl border-2 py-4 transition-all duration-150',
                     formData.result === result.value
-                      ? 'border-emerald-500 bg-emerald-50'
-                      : 'border-gray-200 hover:border-gray-300'
+                      ? result.value === 'solved'
+                        ? 'scale-105 border-emerald-500 bg-emerald-50 shadow-md'
+                        : result.value === 'partial'
+                          ? 'scale-105 border-amber-400 bg-amber-50 shadow-md'
+                          : 'scale-105 border-gray-400 bg-gray-50 shadow-md'
+                      : 'border-gray-200 bg-white hover:scale-102 hover:border-gray-300'
                   )}
                 >
-                  <span className="text-lg">{result.emoji}</span>
-                  <p className="mt-1 text-xs font-medium text-gray-600">
-                    {result.label}
-                  </p>
+                  <span className="text-3xl leading-none">{result.emoji}</span>
+                  <p className="text-[11px] font-bold text-gray-700">{result.label}</p>
                 </button>
               ))}
             </div>
-            {errors.result && (
-              <p className="mt-2 text-sm text-red-600">{errors.result}</p>
-            )}
+            {errors.result && <p className="mt-2 text-xs text-red-500">{errors.result}</p>}
 
-            {/* Result Detail */}
             {formData.result && (
               <div className="mt-4">
-                <Textarea
+                <p className="mb-1 text-[11px] text-gray-400">もう少し教えてください（任意）</p>
+                <textarea
                   placeholder={
                     formData.result === 'solved'
                       ? '例: 作業時間が3時間から30分に短縮。精度も問題なし！'
@@ -268,30 +229,33 @@ export function SimplePostForm() {
                   value={formData.result_detail}
                   onChange={(e) => updateField('result_detail', e.target.value)}
                   maxLength={VALIDATION.RESULT_DETAIL_MAX_LENGTH}
-                  showCount
                   rows={3}
-                  helperText="満足度やつまづきポイントを共有すると、他の人の参考になります（任意）"
+                  className="mt-1 w-full resize-none border-0 border-b border-gray-200 bg-transparent px-0 py-1.5 text-sm placeholder:text-gray-300 focus:border-emerald-400 focus:outline-none focus:ring-0"
                 />
               </div>
             )}
           </div>
 
-          {/* Prompt */}
-          <div className="mb-8">
-            <Textarea
-              label="使ったプロンプト（AIへの指示）"
+          {/* 05 — Prompt (optional) */}
+          <div className="mb-7">
+            <p className={STEP_LABEL}>
+              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-gray-300 text-[9px] text-white font-black">5</span>
+              使ったプロンプト
+              <span className="ml-1 text-[10px] font-normal text-gray-400 normal-case tracking-normal">任意</span>
+            </p>
+            <textarea
               placeholder={PLACEHOLDERS.PROMPT}
               value={formData.prompt}
               onChange={(e) => updateField('prompt', e.target.value)}
               maxLength={VALIDATION.PROMPT_MAX_LENGTH}
-              showCount
               rows={4}
-              helperText="実際にAIに入力した文章を共有すると、読んだ人がすぐ試せます（任意）"
+              className="w-full resize-none border-0 border-b border-gray-200 bg-transparent px-0 py-1.5 text-sm placeholder:text-gray-300 focus:border-emerald-400 focus:outline-none focus:ring-0"
             />
+            <p className="mt-1 text-[11px] text-gray-400">実際にAIに入力した文章を共有すると、読んだ人がすぐ試せます</p>
           </div>
 
-          {/* Anonymous toggle */}
-          <div className="mb-8 flex items-center gap-3">
+          {/* Anonymous */}
+          <div className="mb-7 flex items-center gap-2.5">
             <input
               type="checkbox"
               id="is_anonymous"
@@ -299,61 +263,64 @@ export function SimplePostForm() {
               onChange={(e) => updateField('is_anonymous', e.target.checked)}
               className="h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
             />
-            <label htmlFor="is_anonymous" className="text-sm text-gray-600">
-              匿名で投稿する
-            </label>
+            <label htmlFor="is_anonymous" className="text-xs text-gray-500">匿名で投稿する</label>
           </div>
 
-          {/* Error message */}
           {errors.submit && (
-            <p className="mb-4 text-center text-sm text-red-600">
-              {errors.submit}
-            </p>
+            <p className="mb-4 text-center text-sm text-red-600">{errors.submit}</p>
           )}
 
           {/* Submit */}
-          <Button
-            className="w-full"
-            size="lg"
+          <button
+            type="button"
             onClick={handleSubmit}
-            isLoading={isSubmitting}
             disabled={isSubmitting || showSuccess}
+            className="group relative w-full overflow-hidden rounded-xl bg-gray-900 py-4 text-sm font-bold text-white transition-all duration-200 hover:bg-gray-800 disabled:opacity-50"
           >
-            <Check className="mr-2 h-5 w-5" />
-            あしあとを残す
-          </Button>
-        </Card>
+            <span className="relative flex items-center justify-center gap-2">
+              {isSubmitting ? (
+                <>
+                  <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  投稿中…
+                </>
+              ) : (
+                <>
+                  <Check className="h-4 w-4 text-emerald-400" />
+                  あしあとを残す
+                  <span className="ml-1 text-emerald-400 transition-transform duration-200 group-hover:translate-x-1">→</span>
+                </>
+              )}
+            </span>
+          </button>
+        </div>
 
-        {/* Catharsis success overlay */}
+        {/* ── Catharsis overlay ── */}
         {showSuccess && (
-          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center overflow-hidden rounded-xl bg-white">
-            {/* Confetti particles */}
+          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center overflow-hidden bg-[#fffef7]">
+            {/* Stamp + ink spread */}
             <div className="relative flex items-center justify-center">
-              {CONFETTI.map((p, i) => (
-                <div
-                  key={i}
-                  className="animate-confetti-burst absolute h-2.5 w-2.5 rounded-full"
-                  style={{
-                    backgroundColor: p.color,
-                    '--tx': `${p.x}px`,
-                    '--ty': `${p.y}px`,
-                    animationDelay: `${p.delay}s`,
-                  } as React.CSSProperties}
-                />
-              ))}
-
+              {/* Ink spread ring */}
+              <div className="animate-ink-spread absolute h-24 w-24 rounded-full border-2 border-emerald-400 opacity-0" />
               {/* Stamp circle */}
-              <div className="animate-stamp animate-success-glow flex h-24 w-24 items-center justify-center rounded-full border-[3px] border-emerald-500">
-                <Check className="h-12 w-12 text-emerald-500" strokeWidth={2.5} />
+              <div className="animate-stamp-drop flex h-24 w-24 items-center justify-center rounded-full border-[3px] border-emerald-500 bg-[#fffef7]">
+                {/* Checkmark draws itself */}
+                <svg viewBox="0 0 28 28" className="h-11 w-11" fill="none">
+                  <polyline
+                    points="4,15 11,22 24,7"
+                    stroke="#10b981"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="animate-draw-check"
+                  />
+                </svg>
               </div>
             </div>
-
-            <p className="animate-fade-up mt-8 text-xl font-bold text-gray-800">
-              あしあとを残しました！
-            </p>
-            <p className="animate-fade-up-delay mt-2 text-sm text-gray-400">
-              ページに移動します…
-            </p>
+            <p className="animate-fade-up mt-8 text-xl font-bold text-gray-800">あしあとを残しました</p>
+            <p className="animate-fade-up-delay mt-2 text-sm text-gray-400">ページに移動します…</p>
           </div>
         )}
       </div>
