@@ -96,14 +96,7 @@ export function SimplePostForm() {
         </div>
 
         {/* ── Paper body ── */}
-        <div
-          className="bg-[#fffef7] px-6 pb-8 pt-7"
-          style={{
-            backgroundImage:
-              'repeating-linear-gradient(transparent, transparent 39px, #e9edf2 39px, #e9edf2 40px)',
-            backgroundPositionY: '4px',
-          }}
-        >
+        <div className="bg-[#fffef7] px-6 pb-8 pt-7">
 
           {/* 01 — Category */}
           <div className={RULED_LINE}>
