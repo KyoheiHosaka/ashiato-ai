@@ -24,9 +24,8 @@ interface PostDetailProps {
 }
 
 function buildXShareUrl(post: Post) {
-  const tools = post.ai_tools?.join('・') || 'AI';
   const what = post.what || post.challenge_summary || '';
-  const text = `${what}を${tools}で試してみた記録を残しました。 #myAIlogs\n`;
+  const text = `「${what}、AIでできないかな」→ やってみた結果 #myAIlogs\n`;
   // Use /p/[id] short URL (UUID = ASCII safe) to avoid Japanese in share links
   const shareUrl = `${SITE_CONFIG.url}/p/${post.id}`;
   return `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`;
