@@ -18,10 +18,10 @@ export function HeroSection() {
         {/* Headline — bilingual, polite */}
         <div className="animate-fade-up mb-10 text-center">
           <h1 className="text-3xl font-bold leading-snug tracking-tight text-gray-900 md:text-4xl">
-            試しました。どうでしたか？残しましょう。
+            AIで試したこと、残してみませんか。
           </h1>
           <p className="mt-1.5 text-sm font-medium tracking-wide text-gray-400 md:text-base">
-            Tried it. How'd it go? Let's log it.
+            Have something you tried with AI? Log it here.
           </p>
           <p className="mt-4 text-base text-gray-400 md:text-lg">
             うまくいっても、いかなくても。
