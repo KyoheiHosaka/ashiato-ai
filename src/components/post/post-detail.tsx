@@ -23,12 +23,13 @@ interface PostDetailProps {
   post: Post;
 }
 
-function buildXShareUrl(post: Post, pageUrl: string) {
+function buildXShareUrl(post: Post) {
   const tools = post.ai_tools?.join('・') || 'AI';
   const what = post.what || post.challenge_summary || '';
-  // Keep tweet text concise; URL is ASCII-safe for new slug-based posts
   const text = `${what}を${tools}で試してみた記録を残しました。 #myAIlogs\n`;
-  return `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(pageUrl)}`;
+  // Use /p/[id] short URL (UUID = ASCII safe) to avoid Japanese in share links
+  const shareUrl = `${SITE_CONFIG.url}/p/${post.id}`;
+  return `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`;
 }
 
 export function PostDetail({ post }: PostDetailProps) {
@@ -63,7 +64,7 @@ export function PostDetail({ post }: PostDetailProps) {
           <span className="text-sm font-medium">足跡を残しました！Xでシェアしてみませんか？</span>
           <div className="flex items-center gap-2">
             <a
-              href={buildXShareUrl(post, pageUrl)}
+              href={buildXShareUrl(post)}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 rounded-md bg-black px-3 py-1.5 text-xs font-medium text-white hover:bg-gray-800"
@@ -197,7 +198,7 @@ export function PostDetail({ post }: PostDetailProps) {
             <div className="flex gap-2">
               <BookmarkButton postId={post.id} />
               <a
-                href={buildXShareUrl(post, pageUrl)}
+                href={buildXShareUrl(post)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 rounded-md border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
