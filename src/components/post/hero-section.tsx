@@ -4,7 +4,7 @@ export function HeroSection() {
   return (
     <section className="relative overflow-hidden">
 
-      {/* Stage light — radial gradient anchors the eye to the form */}
+      {/* Stage light */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{
@@ -15,17 +15,23 @@ export function HeroSection() {
 
       <div className="relative mx-auto max-w-4xl px-6 pb-20 pt-16 md:pb-28 md:pt-24">
 
-        {/* Headline */}
+        {/* Headline — bilingual, polite */}
         <div className="animate-fade-up mb-10 text-center">
           <h1 className="text-3xl font-bold leading-snug tracking-tight text-gray-900 md:text-4xl">
-            試した。どうだった？残そう。
+            試しました。どうでしたか？残しましょう。
           </h1>
-          <p className="mt-3 text-base text-gray-400 md:text-lg">
+          <p className="mt-1.5 text-sm font-medium tracking-wide text-gray-400 md:text-base">
+            Tried it. How'd it go? Let's log it.
+          </p>
+          <p className="mt-4 text-base text-gray-400 md:text-lg">
             うまくいっても、いかなくても。
+          </p>
+          <p className="mt-1 text-xs text-gray-300 md:text-sm">
+            Whether it worked or not.
           </p>
         </div>
 
-        {/* Form — the sole protagonist */}
+        {/* Form */}
         <div className="animate-fade-up-delay mx-auto max-w-2xl">
           <SimplePostForm />
         </div>
