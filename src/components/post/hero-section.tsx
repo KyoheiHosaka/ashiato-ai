@@ -21,7 +21,7 @@ export function HeroSection() {
             AIで試したこと、残してみませんか。
           </h1>
           <p className="mt-1.5 text-sm font-medium tracking-wide text-gray-400 md:text-base">
-            Have something you tried with AI? Log it here.
+            Wrestled with AI? Log it here.
           </p>
           <p className="mt-4 text-base text-gray-400 md:text-lg">
             うまくいっても、いかなくても。
