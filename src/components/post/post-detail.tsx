@@ -25,7 +25,9 @@ interface PostDetailProps {
 
 function buildXShareUrl(post: Post, pageUrl: string) {
   const tools = post.ai_tools?.join('・') || 'AI';
-  const text = `「${post.what || post.challenge_summary}」を${tools}で解決！ #myAIlogs\n`;
+  const what = post.what || post.challenge_summary || '';
+  // Keep tweet text concise; URL is ASCII-safe for new slug-based posts
+  const text = `${what}を${tools}で試してみた記録を残しました。 #myAIlogs\n`;
   return `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(pageUrl)}`;
 }
 

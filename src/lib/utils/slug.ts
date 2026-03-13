@@ -20,13 +20,14 @@ export function toolToSlug(tool: AITool | string): string {
 
 /**
  * Generate a base slug from post fields.
- * Format: {tool}-{what(max30chars)}-{result}
- * Example: chatgpt-エクセルのマクロ-partial
+ * Format: {tool}-{result}-{randomId}
+ * Example: chatgpt-solved-x7k2p9ab
+ * Uses random ID to avoid Japanese characters in URLs (clean X/SNS share links).
  */
-export function generateBaseSlug(tool: string, what: string, result: string): string {
+export function generateBaseSlug(tool: string, _what: string, result: string): string {
   const toolSlug = toolToSlug(tool);
-  const whatSlug = what.trim().slice(0, 30);
-  return `${toolSlug}-${whatSlug}-${result}`;
+  const id = Math.random().toString(36).slice(2, 10);
+  return `${toolSlug}-${result}-${id}`;
 }
 
 /**
