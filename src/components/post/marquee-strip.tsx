@@ -57,7 +57,7 @@ export function MarqueeTrack({ posts }: { posts: MarqueePost[] }) {
 
   return (
     <div className="overflow-hidden py-5 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
-      <div className="flex w-max animate-marquee gap-3 hover:[animation-play-state:paused]">
+      <div className="flex w-max animate-marquee gap-3">
         {doubled.map((post, i) => (
           <MiniCard key={`${post.id}-${i}`} post={post} />
         ))}
