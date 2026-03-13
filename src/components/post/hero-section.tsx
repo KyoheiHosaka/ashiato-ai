@@ -1,4 +1,3 @@
-import { SITE_CONFIG } from '@/constants';
 import { SimplePostForm } from '@/components/post/simple-post-form';
 
 export function HeroSection() {
@@ -16,20 +15,14 @@ export function HeroSection() {
 
       <div className="relative mx-auto max-w-4xl px-6 pb-20 pt-16 md:pb-28 md:pt-24">
 
-        {/* Eyebrow — hairlines flank the tagline, framing the stage */}
-        <div className="animate-fade-up mb-10 flex flex-col items-center gap-2.5">
-          <div className="flex items-center gap-5">
-            <span className="h-px w-12 bg-emerald-200" />
-            <p className="text-[10px] font-medium uppercase tracking-[0.35em] text-gray-400">
-              {SITE_CONFIG.tagline}
-            </p>
-            <span className="h-px w-12 bg-emerald-200" />
-          </div>
-          <h1 className="text-lg font-medium text-gray-400 md:text-xl">
-            あなたの{' '}
-            <span className="font-bold text-gray-800">AI あしあと</span>
-            {' '}を残す
+        {/* Headline */}
+        <div className="animate-fade-up mb-10 text-center">
+          <h1 className="text-3xl font-bold leading-snug tracking-tight text-gray-900 md:text-4xl">
+            試した。どうだった？残そう。
           </h1>
+          <p className="mt-3 text-base text-gray-400 md:text-lg">
+            うまくいっても、いかなくても。
+          </p>
         </div>
 
         {/* Form — the sole protagonist */}
